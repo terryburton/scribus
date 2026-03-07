@@ -202,6 +202,7 @@ HelpBrowser::~HelpBrowser()
 void HelpBrowser::closeEvent(QCloseEvent * event)
 {
 	delete m_menuModel;
+	m_menuModel = nullptr;
 
 	// no need to delete child widgets, Qt does it all for us
 	// bookmarks
@@ -244,6 +245,17 @@ void HelpBrowser::closeEvent(QCloseEvent * event)
 	m_prefs->set("ysize", height());
 
 	emit closed();
+}
+
+void HelpBrowser::showEvent(QShowEvent * event)
+{
+	QMainWindow::showEvent(event);
+	if (!m_pendingNavigatorFile.isEmpty())
+	{
+		QString file = m_pendingNavigatorFile;
+		m_pendingNavigatorFile.clear();
+		selectNavigatorItem(file);
+	}
 }
 
 void HelpBrowser::setupLocalUI()
@@ -292,6 +304,13 @@ void HelpBrowser::setupLocalUI()
 #endif
 	goBack->setMenu(histMenu);
 	
+	connect(textBrowser, &QTextBrowser::sourceChanged, this, [this](const QUrl& url) {
+		QString file = url.fileName();
+		if (url.hasFragment())
+			file += "#" + url.fragment();
+		selectNavigatorItem(file);
+	});
+
 	helpNav->listView->header()->hide();
 	helpNav->searchingView->header()->hide();
 	helpNav->bookmarksView->header()->hide();
@@ -518,10 +537,7 @@ void HelpBrowser::jumpToHelpSection(const QString& jumpToSection, const QString&
 		{
 			QModelIndex index = m_menuModel->index(0, 1);
 			if (index.isValid())
-			{
-				helpNav->listView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
 				toLoad = m_menuModel->data(index, Qt::DisplayRole).toString();
-			}
 		}
 		else if (jumpToSection == "scripter")
 		{
@@ -538,17 +554,53 @@ void HelpBrowser::jumpToHelpSection(const QString& jumpToSection, const QString&
 		displayNoHelp();
 }
 
+void HelpBrowser::selectNavigatorItem(const QString& file)
+{
+	if (m_menuModel == nullptr || m_navigating)
+		return;
+	QModelIndex startIndex = m_menuModel->index(0, 1);
+	// Try exact match first (including any fragment), then base file without fragment
+	QModelIndexList matches = m_menuModel->match(startIndex, Qt::DisplayRole, file, 1, Qt::MatchExactly | Qt::MatchRecursive);
+	if (matches.isEmpty())
+	{
+		int hashPos = file.indexOf('#');
+		if (hashPos >= 0)
+			matches = m_menuModel->match(startIndex, Qt::DisplayRole, file.left(hashPos), 1, Qt::MatchExactly | Qt::MatchRecursive);
+	}
+	if (matches.isEmpty())
+		return;
+	QModelIndex col0 = matches.first().sibling(matches.first().row(), 0);
+	m_navigating = true;
+	helpNav->listView->expand(col0.parent());
+	helpNav->listView->selectionModel()->select(col0, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+	helpNav->listView->expand(col0);
+	helpNav->listView->scrollTo(col0);
+	m_navigating = false;
+	if (!isVisible())
+		m_pendingNavigatorFile = file;
+}
+
 void HelpBrowser::loadHelp(const QString& fileName)
 {
 	struct histd2 his;
 	bool isAvail = false;
 	QString toLoad;
 
-	QFileInfo fi(fileName);
+	// Separate fragment (e.g. "file.html#anchor" -> "file.html" + "anchor")
+	QString filePart = fileName;
+	QString fragment;
+	int hashPos = fileName.indexOf('#');
+	if (hashPos >= 0)
+	{
+		filePart = fileName.left(hashPos);
+		fragment = fileName.mid(hashPos + 1);
+	}
+
+	QFileInfo fi(filePart);
 	if (fi.fileName().length() > 0)
 	{
 		if (fi.isAbsolute() && fi.exists())
-			toLoad = fileName;
+			toLoad = filePart;
 		if (toLoad.isEmpty())
 		{
 			QStringList searchPaths = textBrowser->searchPaths();
@@ -581,7 +633,10 @@ void HelpBrowser::loadHelp(const QString& fileName)
 	}
 	if (isAvail)
 	{
-		textBrowser->setSource(QUrl::fromLocalFile(toLoad));
+		QUrl url = QUrl::fromLocalFile(fi.absoluteFilePath());
+		if (!fragment.isEmpty())
+			url.setFragment(fragment);
+		textBrowser->setSource(url);
 		
 //		his.title = textBrowser->title();
 		if (his.title.isEmpty())
@@ -685,6 +740,9 @@ void HelpBrowser::readHistory()
 void HelpBrowser::itemSelected(const QItemSelection & selected, const QItemSelection & deselected)
 {
 	Q_UNUSED(deselected);
+
+	if (m_navigating)
+		return;
 
 	int i = 0;
 	const QModelIndexList items = selected.indexes();

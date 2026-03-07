@@ -86,8 +86,10 @@ public slots:
 
 protected:
 	void closeEvent(QCloseEvent * event) override;
+	void showEvent(QShowEvent * event) override;
 
 	void setupLocalUI();
+	void selectNavigatorItem(const QString& file);
 	/*! \brief Get bookmarks file path. */
 	QString bookmarkFile() const;
 	/*! \brief Reads saved bookmarks from external file */
@@ -137,6 +139,8 @@ protected:
 	/** \brief Configuration structure */
 	PrefsContext* m_prefs { nullptr };
 	ScHelpTreeModel* m_menuModel { nullptr };
+	QString m_pendingNavigatorFile;
+	bool m_navigating { false };
 	QMap<QString, QString> m_quickHelpIndex;
 	QMap<QString, QPair<QString, QString> > m_bookmarkIndex;
 
