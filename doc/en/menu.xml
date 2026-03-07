@@ -144,6 +144,140 @@
 		</submenuitem>
 		<submenuitem text="Lorem ipsum Howto" file="lipsum.html"/>
 	</area>
+	<area text="Barcode Reference" file="bwipp-symbologies.html">
+		<submenuitem text="Point of Sale Symbols" file="bwipp-symbologies.html#point-of-sale">
+			<submenuitem text="EAN-13" file="bwipp-symbologies.html#ean-13"/>
+			<submenuitem text="EAN-8" file="bwipp-symbologies.html#ean-8"/>
+			<submenuitem text="UPC-A" file="bwipp-symbologies.html#upc-a"/>
+			<submenuitem text="UPC-E" file="bwipp-symbologies.html#upc-e"/>
+			<submenuitem text="ISBN" file="bwipp-symbologies.html#isbn"/>
+			<submenuitem text="ISMN" file="bwipp-symbologies.html#ismn"/>
+			<submenuitem text="ISSN" file="bwipp-symbologies.html#issn"/>
+		</submenuitem>
+		<submenuitem text="Two-Dimensional Symbols" file="bwipp-symbologies.html#two-dimensional">
+			<submenuitem text="Aztec Code" file="bwipp-symbologies.html#aztec-code"/>
+			<submenuitem text="Compact Aztec Code" file="bwipp-symbologies.html#compact-aztec-code"/>
+			<submenuitem text="Aztec Runes" file="bwipp-symbologies.html#aztec-runes"/>
+			<submenuitem text="Data Matrix" file="bwipp-symbologies.html#data-matrix"/>
+			<submenuitem text="Data Matrix Rectangular" file="bwipp-symbologies.html#data-matrix-rectangular"/>
+			<submenuitem text="Data Matrix Rectangular Extension" file="bwipp-symbologies.html#data-matrix-rectangular-extension"/>
+			<submenuitem text="Han Xin Code" file="bwipp-symbologies.html#han-xin-code"/>
+			<submenuitem text="MicroPDF417" file="bwipp-symbologies.html#micropdf417"/>
+			<submenuitem text="PDF417" file="bwipp-symbologies.html#pdf417"/>
+			<submenuitem text="Compact PDF417" file="bwipp-symbologies.html#compact-pdf417"/>
+			<submenuitem text="QR Code" file="bwipp-symbologies.html#qr-code"/>
+			<submenuitem text="Micro QR Code" file="bwipp-symbologies.html#micro-qr-code"/>
+			<submenuitem text="Rectangular Micro QR Code" file="bwipp-symbologies.html#rectangular-micro-qr-code"/>
+		</submenuitem>
+		<submenuitem text="One-Dimensional Symbols" file="bwipp-symbologies.html#one-dimensional">
+			<submenuitem text="Code 128" file="bwipp-symbologies.html#code-128"/>
+			<submenuitem text="Code 39" file="bwipp-symbologies.html#code-39"/>
+			<submenuitem text="Code 39 Extended" file="bwipp-symbologies.html#code-39-extended"/>
+			<submenuitem text="Code 93" file="bwipp-symbologies.html#code-93"/>
+			<submenuitem text="Code 93 Extended" file="bwipp-symbologies.html#code-93-extended"/>
+			<submenuitem text="Interleaved 2 of 5" file="bwipp-symbologies.html#interleaved-2-of-5"/>
+		</submenuitem>
+		<submenuitem text="Supply Chain Symbols" file="bwipp-symbologies.html#supply-chain">
+			<submenuitem text="EAN-14" file="bwipp-symbologies.html#ean-14"/>
+			<submenuitem text="ITF-14" file="bwipp-symbologies.html#itf-14"/>
+			<submenuitem text="SSCC-18" file="bwipp-symbologies.html#sscc-18"/>
+			<submenuitem text="GS1 DataMatrix" file="bwipp-symbologies.html#gs1-datamatrix"/>
+			<submenuitem text="GS1 DataMatrix Rectangular" file="bwipp-symbologies.html#gs1-datamatrix-rectangular"/>
+			<submenuitem text="GS1 QR Code" file="bwipp-symbologies.html#gs1-qr-code"/>
+			<submenuitem text="GS1 Digital Link Data Matrix" file="bwipp-symbologies.html#gs1-digital-link-data-matrix"/>
+			<submenuitem text="GS1 Digital Link QR Code" file="bwipp-symbologies.html#gs1-digital-link-qr-code"/>
+			<submenuitem text="GS1-128" file="bwipp-symbologies.html#gs1-128"/>
+			<submenuitem text="GS1 DotCode" file="bwipp-symbologies.html#gs1-dotcode"/>
+		</submenuitem>
+		<submenuitem text="GS1 DataBar Family Symbols" file="bwipp-symbologies.html#gs1-databar-family">
+			<submenuitem text="GS1 DataBar Omnidirectional" file="bwipp-symbologies.html#gs1-databar-omnidirectional"/>
+			<submenuitem text="GS1 DataBar Stacked Omnidirectional" file="bwipp-symbologies.html#gs1-databar-stacked-omnidirectional"/>
+			<submenuitem text="GS1 DataBar Expanded" file="bwipp-symbologies.html#gs1-databar-expanded"/>
+			<submenuitem text="GS1 DataBar Expanded Stacked" file="bwipp-symbologies.html#gs1-databar-expanded-stacked"/>
+			<submenuitem text="GS1 DataBar Truncated" file="bwipp-symbologies.html#gs1-databar-truncated"/>
+			<submenuitem text="GS1 DataBar Stacked" file="bwipp-symbologies.html#gs1-databar-stacked"/>
+			<submenuitem text="GS1 DataBar Limited" file="bwipp-symbologies.html#gs1-databar-limited"/>
+			<submenuitem text="GS1 North American Coupon Code" file="bwipp-symbologies.html#gs1-north-american-coupon-code"/>
+		</submenuitem>
+		<submenuitem text="Postal Symbols" file="bwipp-symbologies.html#postal-symbols">
+			<submenuitem text="Australia Post" file="bwipp-symbologies.html#australia-post-4-state-customer-code"/>
+			<submenuitem text="Deutsche Post Identcode" file="bwipp-symbologies.html#deutsche-post-identcode"/>
+			<submenuitem text="Deutsche Post Leitcode" file="bwipp-symbologies.html#deutsche-post-leitcode"/>
+			<submenuitem text="Japan Post" file="bwipp-symbologies.html#japan-post-4-state-barcode"/>
+			<submenuitem text="MaxiCode" file="bwipp-symbologies.html#maxicode"/>
+			<submenuitem text="Royal Mail" file="bwipp-symbologies.html#royal-mail-4-state-customer-code"/>
+			<submenuitem text="Mailmark" file="bwipp-symbologies.html#mailmark"/>
+			<submenuitem text="Royal TNT Post" file="bwipp-symbologies.html#royal-tnt-post-4-state-barcode"/>
+			<submenuitem text="USPS Intelligent Mail" file="bwipp-symbologies.html#usps-intelligent-mail"/>
+			<submenuitem text="USPS POSTNET" file="bwipp-symbologies.html#usps-postnet"/>
+			<submenuitem text="USPS PLANET" file="bwipp-symbologies.html#usps-planet"/>
+		</submenuitem>
+		<submenuitem text="Pharmaceutical Symbols" file="bwipp-symbologies.html#pharmaceutical-symbols">
+			<submenuitem text="Italian Pharmacode" file="bwipp-symbologies.html#italian-pharmacode"/>
+			<submenuitem text="Pharmacode" file="bwipp-symbologies.html#pharmacode"/>
+			<submenuitem text="Two-Track Pharmacode" file="bwipp-symbologies.html#two-track-pharmacode"/>
+			<submenuitem text="PZN" file="bwipp-symbologies.html#pzn"/>
+		</submenuitem>
+		<submenuitem text="HIBC Symbols" file="bwipp-symbologies.html#hibc-symbols">
+			<submenuitem text="HIBC Code 39" file="bwipp-symbologies.html#hibc-code-39"/>
+			<submenuitem text="HIBC Code 128" file="bwipp-symbologies.html#hibc-code-128"/>
+			<submenuitem text="HIBC PDF417" file="bwipp-symbologies.html#hibc-pdf417"/>
+			<submenuitem text="HIBC MicroPDF417" file="bwipp-symbologies.html#hibc-micropdf417"/>
+			<submenuitem text="HIBC QR Code" file="bwipp-symbologies.html#hibc-qr-code"/>
+			<submenuitem text="HIBC Data Matrix" file="bwipp-symbologies.html#hibc-data-matrix"/>
+			<submenuitem text="HIBC Data Matrix Rectangular" file="bwipp-symbologies.html#hibc-data-matrix-rectangular"/>
+			<submenuitem text="HIBC Codablock F" file="bwipp-symbologies.html#hibc-codablock-f"/>
+			<submenuitem text="HIBC Aztec Code" file="bwipp-symbologies.html#hibc-aztec-code"/>
+		</submenuitem>
+		<submenuitem text="Less-used Symbols" file="bwipp-symbologies.html#less-used-symbols">
+			<submenuitem text="Channel Code" file="bwipp-symbologies.html#channel-code"/>
+			<submenuitem text="Codabar" file="bwipp-symbologies.html#codabar"/>
+			<submenuitem text="Codablock F" file="bwipp-symbologies.html#codablock-f"/>
+			<submenuitem text="Code 11" file="bwipp-symbologies.html#code-11"/>
+			<submenuitem text="Code 16K" file="bwipp-symbologies.html#code-16k"/>
+			<submenuitem text="Code 25" file="bwipp-symbologies.html#code-25"/>
+			<submenuitem text="DotCode" file="bwipp-symbologies.html#dotcode"/>
+			<submenuitem text="Ultracode" file="bwipp-symbologies.html#ultracode"/>
+			<submenuitem text="IATA 2 of 5" file="bwipp-symbologies.html#iata-2-of-5"/>
+			<submenuitem text="Matrix 2 of 5" file="bwipp-symbologies.html#matrix-2-of-5"/>
+			<submenuitem text="Datalogic 2 of 5" file="bwipp-symbologies.html#datalogic-2-of-5"/>
+			<submenuitem text="COOP 2 of 5" file="bwipp-symbologies.html#coop-2-of-5"/>
+			<submenuitem text="Code 49" file="bwipp-symbologies.html#code-49"/>
+			<submenuitem text="Code One" file="bwipp-symbologies.html#code-one"/>
+			<submenuitem text="MSI Plessey" file="bwipp-symbologies.html#msi-plessey"/>
+			<submenuitem text="Plessey" file="bwipp-symbologies.html#plessey"/>
+			<submenuitem text="PosiCode" file="bwipp-symbologies.html#posicode"/>
+			<submenuitem text="Telepen" file="bwipp-symbologies.html#telepen"/>
+			<submenuitem text="Telepen Numeric" file="bwipp-symbologies.html#telepen-numeric"/>
+		</submenuitem>
+		<submenuitem text="GS1 Composite Symbols" file="bwipp-symbologies.html#gs1-composite-symbols">
+			<submenuitem text="EAN-13 Composite" file="bwipp-symbologies.html#ean-13-composite"/>
+			<submenuitem text="EAN-8 Composite" file="bwipp-symbologies.html#ean-8-composite"/>
+			<submenuitem text="UPC-A Composite" file="bwipp-symbologies.html#upc-a-composite"/>
+			<submenuitem text="UPC-E Composite" file="bwipp-symbologies.html#upc-e-composite"/>
+			<submenuitem text="GS1 DataBar Omnidirectional Composite" file="bwipp-symbologies.html#gs1-databar-omnidirectional-composite"/>
+			<submenuitem text="GS1 DataBar Stacked Omnidirectional Composite" file="bwipp-symbologies.html#gs1-databar-stacked-omnidirectional-composite"/>
+			<submenuitem text="GS1 DataBar Expanded Composite" file="bwipp-symbologies.html#gs1-databar-expanded-composite"/>
+			<submenuitem text="GS1 DataBar Expanded Stacked Composite" file="bwipp-symbologies.html#gs1-databar-expanded-stacked-composite"/>
+			<submenuitem text="GS1 DataBar Truncated Composite" file="bwipp-symbologies.html#gs1-databar-truncated-composite"/>
+			<submenuitem text="GS1 DataBar Stacked Composite" file="bwipp-symbologies.html#gs1-databar-stacked-composite"/>
+			<submenuitem text="GS1 DataBar Limited Composite" file="bwipp-symbologies.html#gs1-databar-limited-composite"/>
+			<submenuitem text="GS1-128 Composite" file="bwipp-symbologies.html#gs1-128-composite"/>
+		</submenuitem>
+		<submenuitem text="GS1 AI Standard Format" file="bwipp-gs1ai.html"/>
+		<submenuitem text="General Options" file="bwipp-options.html">
+			<submenuitem text="Check Digits" file="bwipp-options.html#check-digits"/>
+			<submenuitem text="Input Processing" file="bwipp-options.html#input-processing"/>
+			<submenuitem text="Symbol Dimensions" file="bwipp-options.html#symbol-dimensions"/>
+			<submenuitem text="Element Properties" file="bwipp-options.html#element-properties"/>
+			<submenuitem text="Text Properties" file="bwipp-options.html#text-properties"/>
+			<submenuitem text="Text Positioning" file="bwipp-options.html#text-positioning"/>
+			<submenuitem text="Border Properties" file="bwipp-options.html#border-properties"/>
+			<submenuitem text="Symbol Colors" file="bwipp-options.html#symbol-colors"/>
+			<submenuitem text="EAN-UPC Add-ons" file="bwipp-options.html#ean-upc-add-ons"/>
+			<submenuitem text="EAN-UPC Guards" file="bwipp-options.html#ean-upc-guards"/>
+		</submenuitem>
+	</area>
 	<area text="Other Information" file="otherinfo.html">
 		<submenuitem text="Community" file="resources.html"/>
 		<submenuitem text="Bug Reports" file="bugreport.html"/>

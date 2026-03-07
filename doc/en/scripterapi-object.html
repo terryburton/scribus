@@ -16,6 +16,13 @@
 <p>Creates a new bezier curve and returns its name. The points for the bezier curve are stored in the list "list" in the following order: [x1, y1, kx1, ky1, x2, y2, kx2, ky2...xn. yn, kxn. kyn] In the points list, x and y mean the x and y coordinates of the point and kx and ky meaning the control point for the curve.  The coordinates are given in the current measurement units of the document (see UNIT constants). "name" should be a unique identifier for the object because you need this name for further access to that object. If "name" is not given Scribus will create one for you.</p>
 <p>May raise <a href="scripterapi.html#NameExistsError">NameExistsError</a> if you explicitly pass a name that's already used. May raise ValueError if an insufficient number of points is passed or if the number of values passed don't group into points without leftovers.</p></dd>
 
+<dt><a name="-createBarcode"><strong>createBarcode</strong></a>(...)</dt>
+<dd><code>createBarcode("encoder", "data", "options", x, y, ["name"]) -&gt; string</code>
+<p>Creates a new barcode on the current page and returns its name. "encoder" is the BWIPP encoder name, e.g. "qrcode", "ean13", "code128". "data" is the barcode content string. "options" is the BWIPP options string, e.g. "eclevel=H includetext". x and y are the position coordinates in the current measurement units. "name" is an optional unique identifier for the object.</p>
+<p>Requires Ghostscript to be available.</p>
+<p>May raise ScribusError if Ghostscript is not available or barcode generation fails.
+May raise <a href="scripterapi.html#NameExistsError">NameExistsError</a> if you explicitly pass a name that's already used.</p></dd>
+
 <dt><a name="-createEllipse"><strong>createEllipse</strong></a>(...)</dt>
 <dd><code>createEllipse(x, y, width, height, ["name"]) -&gt; string</code>
 <p>Creates a new ellipse on the current page and returns its name. The coordinates are given in the current measurement units of the document (see UNIT constants). "name" should be a unique identifier for the object because you need this name for further referencing of that object. If "name" is not given Scribus will create one for you.</p>

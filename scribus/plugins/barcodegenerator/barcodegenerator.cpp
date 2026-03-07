@@ -18,6 +18,7 @@ for which a new license (GPL+exception) is in place.
 #include "iconmanager.h"
 #include "loadsaveplugin.h"
 #include "scpaths.h"
+#include "ui/helpbrowser.h"
 #include "scribus.h"
 #include "scribuscore.h"
 #include "scribusview.h"
@@ -350,6 +351,10 @@ BarcodeGenerator::BarcodeGenerator(QWidget* parent, const char* name)
 	connect(ui.bgColorButton, SIGNAL(clicked()), this, SLOT(bgColorButton_pressed()));
 	connect(ui.lnColorButton, SIGNAL(clicked()), this, SLOT(lnColorButton_pressed()));
 	connect(ui.txtColorButton, SIGNAL(clicked()), this, SLOT(txtColorButton_pressed()));
+	ui.helpSymbologiesButton->setIcon(IconManager::instance().loadIcon("help-browser"));
+	ui.helpOptionsButton->setIcon(IconManager::instance().loadIcon("help-browser"));
+	connect(ui.helpSymbologiesButton, SIGNAL(clicked()), this, SLOT(helpSymbologiesButton_pressed()));
+	connect(ui.helpOptionsButton, SIGNAL(clicked()), this, SLOT(helpOptionsButton_pressed()));
 	connect(ui.okButton, SIGNAL(clicked()), this, SLOT(okButton_pressed()));
 	connect(ui.cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton_pressed()));
 	connect(ui.codeEdit, SIGNAL(textChanged(QString)), this, SLOT(codeEdit_textChanged(QString)));
@@ -360,6 +365,12 @@ BarcodeGenerator::BarcodeGenerator(QWidget* parent, const char* name)
 
 BarcodeGenerator::~BarcodeGenerator()
 {
+	if (m_helpBrowser)
+	{
+		m_helpBrowser->close();
+		delete m_helpBrowser;
+		m_helpBrowser = nullptr;
+	}
 	if (!paintBarcodeTimer)
 		return;
 	delete paintBarcodeTimer;
@@ -1049,6 +1060,36 @@ bool BarcodeGenerator::generateBarcode(PageItem* replaceItem, double placeX, dou
 		tran.commit();
 
 	return true;
+}
+
+void BarcodeGenerator::showHelpBrowser(const QString& file)
+{
+	if (!m_helpBrowser)
+	{
+		m_helpBrowser = new HelpBrowser(this, tr("Barcode Reference"), "en", "", file);
+		m_helpBrowser->setWindowFlags(m_helpBrowser->windowFlags() | Qt::Tool);
+		connect(m_helpBrowser, &HelpBrowser::closed, this, [this]() {
+			m_helpBrowser->deleteLater();
+			m_helpBrowser = nullptr;
+		});
+	}
+	else
+	{
+		m_helpBrowser->jumpToHelpSection("", file, false);
+	}
+	m_helpBrowser->show();
+	m_helpBrowser->raise();
+	m_helpBrowser->activateWindow();
+}
+
+void BarcodeGenerator::helpSymbologiesButton_pressed()
+{
+	showHelpBrowser("bwipp-symbologies.html");
+}
+
+void BarcodeGenerator::helpOptionsButton_pressed()
+{
+	showHelpBrowser("bwipp-options.html");
 }
 
 void BarcodeGenerator::okButton_pressed()

@@ -20,6 +20,8 @@ for which a new license (GPL+exception) is in place.
 
 #include "sccolor.h"
 
+class HelpBrowser;
+
 class PageItem;
 
 /*! \brief One Barcode Entity.
@@ -157,6 +159,8 @@ class BarcodeGenerator : public QDialog
 		PageItem* m_editItem {nullptr};
 
 	private:
+		HelpBrowser* m_helpBrowser {nullptr};
+		void showHelpBrowser(const QString& file);
 		void enqueuePaintBarcode(int);
 		QString buildPSCommand();
 		BarcodeGeneratorRenderThread thread;
@@ -187,6 +191,8 @@ class BarcodeGenerator : public QDialog
 		void codeEdit_textChanged(const QString& s);
 		//void optionsEdit_textChanged(const QString& s);
 		void resetButton_clicked();
+		void helpSymbologiesButton_pressed();
+		void helpOptionsButton_pressed();
 		void okButton_pressed();
 		void cancelButton_pressed();
 	private slots:
