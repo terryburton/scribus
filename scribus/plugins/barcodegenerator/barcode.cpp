@@ -5,10 +5,9 @@ a copyright and/or license notice that predates the release of Scribus 1.3.2
 for which a new license (GPL+exception) is in place.
 */
 
-#include <QRegularExpression>
-
 #include "barcode.h"
 #include "barcodegenerator.h"
+#include "bwipp/postscriptbarcode.hpp"
 #include "scribus.h"
 #include "scribuscore.h"
 #include "scribusstructs.h"
@@ -54,21 +53,17 @@ const ScActionPlugin::AboutData* Barcode::getAboutData() const
 	about->description = "Barcode Writer in Pure PostScript generates all barcode formats entirely within PostScript hence this plugin requires Ghostscript to be installed on your system. https://bwipp.terryburton.co.uk";
 
 	// Extract the version information from BWIPP
-	QFile f( ScPaths::instance().shareDir() + QString("/plugins/barcode.ps") );
-	if (f.open(QIODevice::ReadOnly))
+	QString barcodeFile = ScPaths::instance().shareDir() + QString("/plugins/barcode.ps");
+	try
 	{
-		QTextStream ts(&f);
-		QString bwipp = ts.read(150);
-		f.close();
-		QRegularExpression rx("\\n% Barcode Writer in Pure PostScript - Version ([\\d-]+)\\n");
-		QRegularExpressionMatch match = rx.match(bwipp);
-		if (match.hasMatch())
-			about->version = "Backend: " + match.captured(1);
-		else
-			about->version = "Backend: Unknown";
+		bwipp::BWIPP ctx(bwipp::InitOpts{}.filename(barcodeFile.toLocal8Bit().constData()));
+		std::string ver = ctx.get_version();
+		about->version = !ver.empty() ? "Backend: " + QString::fromLatin1(ver.c_str()) : "Backend: Unknown";
 	}
-	else
+	catch (const std::exception &)
+	{
 		about->version = "Unable to open backend file";
+	}
 	// about->releaseDate
 	about->copyright = QString::fromUtf8("Backend: Copyright (c) 2004-2026 Terry Burton - tez@terryburton.co.uk\nFrontend: Copyright (c) 2005 Petr Van\xc4\x9bk - petr@scribus.info");
 	about->license = "Backend: MIT/X-Consortium, Frontend: GPL";

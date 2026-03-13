@@ -1,0 +1,657 @@
+{
+    "_comment": [
+        "UI configuration for the Scribus barcode generator plugin.",
+        "Augments data provided by the BWIPP C library. If this file is absent,",
+        "the plugin works but with no combo boxes populated or checkboxes enabled.",
+        "",
+        "families.<name>:",
+        "  Keys must match the FMLY metadata names from barcode.ps exactly.",
+        "  order   - Sort position in the family combo box (default: 0)",
+        "  enabled - Show/hide this family (default: true)",
+        "  desc    - Override the display name",
+        "",
+        "encoders.<name>:",
+        "  Keys must match the encoder resource names from barcode.ps exactly.",
+        "  Only include properties that differ from defaults.",
+        "  order   - Sort position within its family (default: 0)",
+        "  enabled - Show/hide this encoder (default: true)",
+        "  desc    - Override the description from the library",
+        "  exam    - Override the example data input",
+        "  exop    - Override the example options string",
+        "  combo1  - First combo box:  { name, key, values: [...] }",
+        "  combo2  - Second combo box: { name, key, values: [...] }",
+        "            name   = UI label, key = options string key,",
+        "            values = list of selectable values",
+        "  includetext, guardwhitespace, includecheck,",
+        "  includecheckintext, parse, parsefnc:",
+        "            true = checkbox enabled for this encoder (default: false)"
+    ],
+    "families": {
+        "Point Of Sale":            { "order": 1 },
+        "Supply Chain":             { "order": 2 },
+        "Two-dimensional symbols":  { "order": 3 },
+        "One-dimensional symbols":  { "order": 4 },
+        "GS1 DataBar":              { "order": 5 },
+        "Postal Symbols":           { "order": 6 },
+        "Pharmaceutical Symbols":   { "order": 7 },
+        "Less-used Symbols":        { "order": 8 },
+        "GS1 Composite Symbols":    { "order": 9 },
+        "Payments":                 { "enabled": false },
+        "Specialist":               { "enabled": false }
+    },
+    "encoders": {
+        "auspost": {
+            "includetext": true
+        },
+        "azteccode": {
+            "combo1": {
+                "name": "Layers",
+                "key": "layers",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                    "31", "32"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": [
+                    "5", "10", "15", "20", "25", "30", "35", "40", "45",
+                    "50", "55", "60", "65", "70", "75", "80", "85", "90", "95"
+                ]
+            },
+            "parse": true
+        },
+        "azteccodecompact": {
+            "combo1": {
+                "name": "Layers",
+                "key": "layers",
+                "values": ["1", "2", "3", "4"]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": [
+                    "5", "10", "15", "20", "25", "30", "35", "40", "45",
+                    "50", "55", "60", "65", "70", "75", "80", "85", "90", "95"
+                ]
+            },
+            "parse": true
+        },
+        "bc412": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "channelcode": {
+            "includetext": true,
+            "includecheck": true
+        },
+        "codablockf": {
+            "parse": true,
+            "parsefnc": true
+        },
+        "code11": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "code128": {
+            "includetext": true,
+            "parse": true,
+            "parsefnc": true
+        },
+        "code16k": {
+            "parse": true,
+            "parsefnc": true
+        },
+        "code2of5": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "code32": {
+            "includetext": true
+        },
+        "code39": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "code39ext": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true,
+            "parse": true
+        },
+        "code49": {
+            "parse": true,
+            "parsefnc": true
+        },
+        "code93": {
+            "includetext": true,
+            "includecheck": true,
+            "parsefnc": true
+        },
+        "code93ext": {
+            "includetext": true,
+            "includecheck": true,
+            "parse": true
+        },
+        "codeone": {
+            "parse": true,
+            "parsefnc": true
+        },
+        "coop2of5": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "datalogic2of5": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "datamatrix": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "10x10", "12x12", "14x14", "16x16", "18x18", "20x20",
+                    "22x22", "24x24", "26x26", "32x32", "36x36", "40x40",
+                    "44x44", "48x48", "52x52", "64x64", "72x72", "80x80",
+                    "88x88", "96x96", "104x104", "120x120", "132x132", "144x144"
+                ]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "datamatrixrectangular": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "8x18", "8x32", "12x26", "12x36", "16x36", "16x48"
+                ]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "datamatrixrectangularextension": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "8x18", "8x32", "12x26", "12x36", "16x36", "16x48",
+                    "8x48", "8x64", "8x80", "8x96", "8x120", "8x144",
+                    "12x64", "12x88", "16x64",
+                    "20x36", "20x44", "20x64",
+                    "22x48", "24x48", "24x64",
+                    "26x40", "26x48", "26x64"
+                ]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "dotcode": {
+            "parse": true,
+            "parsefnc": true
+        },
+        "ean13": {
+            "includetext": true,
+            "guardwhitespace": true
+        },
+        "ean13composite": {
+            "includetext": true,
+            "guardwhitespace": true
+        },
+        "ean14": {
+            "includetext": true
+        },
+        "ean8": {
+            "includetext": true,
+            "guardwhitespace": true
+        },
+        "ean8composite": {
+            "includetext": true,
+            "guardwhitespace": true
+        },
+        "gs1-128": {
+            "includetext": true
+        },
+        "gs1datamatrix": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "10x10", "12x12", "14x14", "16x16", "18x18", "20x20",
+                    "22x22", "24x24", "26x26", "32x32", "36x36", "40x40",
+                    "44x44", "48x48", "52x52", "64x64", "72x72", "80x80",
+                    "88x88", "96x96", "104x104", "120x120", "132x132", "144x144",
+                    "8x18", "8x32", "12x26", "12x36", "16x36", "16x48"
+                ]
+            }
+        },
+        "gs1datamatrixrectangular": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "8x18", "8x32", "12x26", "12x36", "16x36", "16x48"
+                ]
+            }
+        },
+        "gs1dldatamatrix": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "10x10", "12x12", "14x14", "16x16", "18x18", "20x20",
+                    "22x22", "24x24", "26x26", "32x32", "36x36", "40x40",
+                    "44x44", "48x48", "52x52", "64x64", "72x72", "80x80",
+                    "88x88", "96x96", "104x104", "120x120", "132x132", "144x144"
+                ]
+            },
+            "includetext": true
+        },
+        "gs1dlqrcode": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                    "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["L", "Q", "M", "H"]
+            },
+            "includetext": true
+        },
+        "gs1northamericancoupon": {
+            "includetext": true
+        },
+        "gs1qrcode": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                    "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["L", "Q", "M", "H"]
+            }
+        },
+        "hanxin": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                    "31", "32", "33", "34", "35", "36", "37", "38", "39", "40",
+                    "41", "42", "43", "44", "45", "46", "47", "48", "49", "50",
+                    "51", "52", "53", "54", "55", "56", "57", "58", "59", "60",
+                    "61", "62", "63", "64", "65", "66", "67", "68", "69", "70",
+                    "71", "72", "73", "74", "75", "76", "77", "78", "79", "80",
+                    "81", "82", "83", "84"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["L1", "L2", "L3", "L4"]
+            },
+            "parse": true
+        },
+        "hibcazteccode": {
+            "combo1": {
+                "name": "Layers",
+                "key": "layers",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                    "31", "32"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": [
+                    "5", "10", "15", "20", "25", "30", "35", "40", "45",
+                    "50", "55", "60", "65", "70", "75", "80", "85", "90", "95"
+                ]
+            },
+            "parse": true
+        },
+        "hibccodablockf": {
+            "parse": true
+        },
+        "hibccode128": {
+            "includetext": true,
+            "parse": true
+        },
+        "hibccode39": {
+            "includetext": true
+        },
+        "hibcdatamatrix": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "10x10", "12x12", "14x14", "16x16", "18x18", "20x20",
+                    "22x22", "24x24", "26x26", "32x32", "36x36", "40x40",
+                    "44x44", "48x48", "52x52", "64x64", "72x72", "80x80",
+                    "88x88", "96x96", "104x104", "120x120", "132x132", "144x144"
+                ]
+            },
+            "parse": true
+        },
+        "hibcdatamatrixrectangular": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "8x18", "8x32", "12x26", "12x36", "16x36", "16x48"
+                ]
+            },
+            "parse": true
+        },
+        "hibcmicropdf417": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "1x11", "1x14", "1x17", "1x20", "1x24", "1x28",
+                    "2x8", "2x11", "2x14", "2x17", "2x20", "2x23", "2x26",
+                    "3x6", "3x8", "3x10", "3x12", "3x15", "3x20", "3x26", "3x32", "3x38", "3x44",
+                    "4x4", "4x6", "4x8", "4x10", "4x12", "4x15", "4x20", "4x26", "4x32", "4x38", "4x44"
+                ]
+            },
+            "parse": true
+        },
+        "hibcpdf417": {
+            "combo1": {
+                "name": "Columns",
+                "key": "columns",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["1", "2", "3", "4", "5"]
+            },
+            "parse": true
+        },
+        "hibcqrcode": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                    "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["L", "Q", "M", "H"]
+            },
+            "parse": true
+        },
+        "iata2of5": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "identcode": {
+            "includetext": true
+        },
+        "industrial2of5": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "interleaved2of5": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "isbn": {
+            "includetext": true,
+            "guardwhitespace": true
+        },
+        "ismn": {
+            "includetext": true,
+            "guardwhitespace": true
+        },
+        "issn": {
+            "includetext": true,
+            "guardwhitespace": true
+        },
+        "itf14": {
+            "includetext": true
+        },
+        "japanpost": {
+            "includetext": true,
+            "includecheckintext": true
+        },
+        "kix": {
+            "includetext": true
+        },
+        "leitcode": {
+            "includetext": true
+        },
+        "mailmark": {
+            "combo1": {
+                "name": "Type",
+                "key": "type",
+                "values": ["7", "9", "29"]
+            },
+            "parse": true
+        },
+        "matrix2of5": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "maxicode": {
+            "combo1": {
+                "name": "Mode",
+                "key": "mode",
+                "values": ["2", "3", "4", "5", "6"]
+            },
+            "parse": true
+        },
+        "micropdf417": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "1x11", "1x14", "1x17", "1x20", "1x24", "1x28",
+                    "2x8", "2x11", "2x14", "2x17", "2x20", "2x23", "2x26",
+                    "3x6", "3x8", "3x10", "3x12", "3x15", "3x20", "3x26", "3x32", "3x38", "3x44",
+                    "4x4", "4x6", "4x8", "4x10", "4x12", "4x15", "4x20", "4x26", "4x32", "4x38", "4x44"
+                ]
+            },
+            "parse": true
+        },
+        "microqrcode": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": ["M1", "M2", "M3", "M4"]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["L", "Q", "M", "H"]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "msi": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "pdf417": {
+            "combo1": {
+                "name": "Columns",
+                "key": "columns",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["1", "2", "3", "4", "5"]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "pdf417compact": {
+            "combo1": {
+                "name": "Columns",
+                "key": "columns",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["1", "2", "3", "4", "5"]
+            },
+            "parse": true
+        },
+        "pharmacode2": {
+            "includetext": true
+        },
+        "planet": {
+            "includetext": true,
+            "includecheckintext": true
+        },
+        "plessey": {
+            "includetext": true,
+            "includecheckintext": true
+        },
+        "posicode": {
+            "includetext": true,
+            "parse": true,
+            "parsefnc": true
+        },
+        "postnet": {
+            "includetext": true,
+            "includecheckintext": true
+        },
+        "pzn": {
+            "includetext": true
+        },
+        "qrcode": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+                    "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                    "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["L", "Q", "M", "H"]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "rationalizedCodabar": {
+            "includetext": true,
+            "includecheck": true,
+            "includecheckintext": true
+        },
+        "rectangularmicroqrcode": {
+            "combo1": {
+                "name": "Version",
+                "key": "version",
+                "values": [
+                    "R7x43", "R7x59", "R7x77", "R7x99", "R7x139",
+                    "R9x43", "R9x59", "R9x77", "R9x99", "R9x139",
+                    "R11x27", "R11x43", "R11x59", "R11x77", "R11x99", "R11x139",
+                    "R13x27", "R13x43", "R13x59", "R13x77", "R13x99", "R13x139",
+                    "R15x43", "R15x59", "R15x77", "R15x99", "R15x139",
+                    "R17x43", "R17x59", "R17x77", "R17x99", "R17x139"
+                ]
+            },
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["M", "H"]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "royalmail": {
+            "includetext": true,
+            "includecheckintext": true
+        },
+        "sscc18": {
+            "includetext": true
+        },
+        "telepen": {
+            "includetext": true,
+            "parse": true
+        },
+        "telepennumeric": {
+            "includetext": true
+        },
+        "ultracode": {
+            "combo2": {
+                "name": "EC Level",
+                "key": "eclevel",
+                "values": ["EC0", "EC1", "EC2", "EC3", "EC4", "EC5"]
+            },
+            "parse": true,
+            "parsefnc": true
+        },
+        "upca": {
+            "includetext": true
+        },
+        "upcacomposite": {
+            "includetext": true
+        },
+        "upce": {
+            "includetext": true
+        },
+        "upcecomposite": {
+            "includetext": true
+        }
+    }
+}
