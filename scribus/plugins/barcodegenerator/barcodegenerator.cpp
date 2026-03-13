@@ -10,7 +10,6 @@ for which a new license (GPL+exception) is in place.
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QRegularExpression>
 #include <QTextStream>
 #include <QTimer>
 
@@ -417,28 +416,64 @@ static bool parseBwippColor(const QString& hex, ScColor& color)
 	return false;
 }
 
+// Find the value for a key=value token in a space-separated options string.
+// Returns the value if found, or a null QString if not present.
+static QString optGetValue(const QStringList& tokens, const QString& key)
+{
+	const QString prefix = key + "=";
+	for (const QString& t : tokens)
+		if (t.startsWith(prefix))
+			return t.mid(prefix.length());
+	return QString();
+}
+
+// Check whether a bare keyword token is present
+static bool optHasKeyword(const QStringList& tokens, const QString& key)
+{
+	return tokens.contains(key);
+}
+
+// Set key=value in a token list, replacing any existing key= token
+static void optSetValue(QStringList& tokens, const QString& key, const QString& value)
+{
+	const QString prefix = key + "=";
+	for (int i = 0; i < tokens.size(); ++i)
+	{
+		if (tokens[i].startsWith(prefix))
+		{
+			tokens[i] = key + "=" + value;
+			return;
+		}
+	}
+	tokens.append(key + "=" + value);
+}
+
+// Remove all tokens matching key= or bare keyword
+static void optRemoveKey(QStringList& tokens, const QString& key)
+{
+	const QString prefix = key + "=";
+	for (int i = tokens.size() - 1; i >= 0; --i)
+		if (tokens[i] == key || tokens[i].startsWith(prefix))
+			tokens.removeAt(i);
+}
+
 void BarcodeGenerator::updateOptionValue(const QString& key, const QString& value)
 {
-	QString opts = ui.optionsEdit->text();
-	QRegularExpression rx("\\b" + QRegularExpression::escape(key) + "=\\S*");
-	if (opts.contains(rx))
-		opts.replace(rx, key + "=" + value);
-	else
-		opts.append(" " + key + "=" + value);
+	QStringList tokens = ui.optionsEdit->text().split(' ', Qt::SkipEmptyParts);
+	optSetValue(tokens, key, value);
 	ui.optionsEdit->blockSignals(true);
-	ui.optionsEdit->setText(opts.simplified());
+	ui.optionsEdit->setText(tokens.join(' '));
 	ui.optionsEdit->blockSignals(false);
 }
 
 void BarcodeGenerator::ensureOptionPresent(const QString& key)
 {
-	QString opts = ui.optionsEdit->text();
-	QRegularExpression rx("\\b" + QRegularExpression::escape(key) + "\\b");
-	if (!opts.contains(rx))
+	QStringList tokens = ui.optionsEdit->text().split(' ', Qt::SkipEmptyParts);
+	if (!optHasKeyword(tokens, key))
 	{
-		opts.append(" " + key);
+		tokens.append(key);
 		ui.optionsEdit->blockSignals(true);
-		ui.optionsEdit->setText(opts.simplified());
+		ui.optionsEdit->setText(tokens.join(' '));
 		ui.optionsEdit->blockSignals(false);
 	}
 }
@@ -568,7 +603,7 @@ void BarcodeGenerator::enqueuePaintBarcode(int delay)
 
 void BarcodeGenerator::updateOptionsTextFromUI()
 {
-	QString opts = ui.optionsEdit->text();
+	QStringList tokens = ui.optionsEdit->text().split(' ', Qt::SkipEmptyParts);
 
 	const std::initializer_list<std::pair<QCheckBox*, const char*>> boolOpts = {
 		{ui.includetextCheck, "includetext"},
@@ -580,14 +615,14 @@ void BarcodeGenerator::updateOptionsTextFromUI()
 	};
 	for (const auto& [cb, kw] : boolOpts)
 	{
-		QRegularExpression rx("\\b" + QString(kw) + "\\b");
+		QString key = QString::fromLatin1(kw);
 		if (cb->isChecked())
 		{
-			if (!opts.contains(rx))
-				opts.append(" " + QString(kw));
+			if (!optHasKeyword(tokens, key))
+				tokens.append(key);
 		}
 		else
-			opts.replace(rx, " ");
+			tokens.removeAll(key);
 	}
 
 	QString enc = map[ui.bcCombo->currentText()].command;
@@ -596,53 +631,28 @@ void BarcodeGenerator::updateOptionsTextFromUI()
 	QString combo2Key = eui.combo2.key.isEmpty() ? "eclevel" : eui.combo2.key;
 
 	if (ui.formatCombo->currentIndex() != 0)
-	{
-		QString t = ui.formatCombo->currentText();
-		if (!opts.contains(QRegularExpression("\\b" + QRegularExpression::escape(combo1Key) + "=.*\\b")))
-			opts.append(" " + combo1Key + "=" + t);
-		else
-			opts.replace(QRegularExpression("\\b" + QRegularExpression::escape(combo1Key) + "=\\S*\\b"), combo1Key + "=" + t);
-	}
+		optSetValue(tokens, combo1Key, ui.formatCombo->currentText());
 	else
-	{
-		opts.replace(QRegularExpression("\\b" + QRegularExpression::escape(combo1Key) + "=\\S*\\b"), " ");
-	}
+		optRemoveKey(tokens, combo1Key);
 
 	if (ui.eccCombo->currentIndex() != 0)
-	{
-		QString t = ui.eccCombo->currentText();
-		if (!opts.contains(QRegularExpression("\\b" + QRegularExpression::escape(combo2Key) + "=.*\\b")))
-			opts.append(" " + combo2Key + "=" + t);
-		else
-			opts.replace(QRegularExpression("\\b" + QRegularExpression::escape(combo2Key) + "=\\S*\\b"), combo2Key + "=" + t);
-	}
+		optSetValue(tokens, combo2Key, ui.eccCombo->currentText());
 	else
-	{
-		opts.replace(QRegularExpression("\\b" + QRegularExpression::escape(combo2Key) + "=\\S*\\b"), " ");
-	}
+		optRemoveKey(tokens, combo2Key);
 
 	if (ui.inkspreadSlider->value() > 0)
-	{
-		QString val = QString::number(ui.inkspreadSlider->value() / 100.0, 'f', 2);
-		if (!opts.contains(QRegularExpression("\\binkspread=\\S*")))
-			opts.append(" inkspread=" + val);
-		else
-			opts.replace(QRegularExpression("\\binkspread=\\S*"), "inkspread=" + val);
-	}
+		optSetValue(tokens, "inkspread", QString::number(ui.inkspreadSlider->value() / 100.0, 'f', 2));
 	else
-	{
-		opts.replace(QRegularExpression("\\binkspread=\\S*"), " ");
-	}
+		optRemoveKey(tokens, "inkspread");
 
 	ui.optionsEdit->blockSignals(true);
-	ui.optionsEdit->setText(opts.simplified());
+	ui.optionsEdit->setText(tokens.join(' '));
 	ui.optionsEdit->blockSignals(false);
-
 }
 
 void BarcodeGenerator::updateUIFromOptionsText()
 {
-	QString opts = ui.optionsEdit->text();
+	QStringList tokens = ui.optionsEdit->text().split(' ', Qt::SkipEmptyParts);
 
 	auto setCheckIfChanged = [](QCheckBox* cb, bool val) {
 		if (cb->isChecked() != val)
@@ -653,21 +663,20 @@ void BarcodeGenerator::updateUIFromOptionsText()
 		}
 	};
 
-	setCheckIfChanged(ui.includetextCheck, opts.contains(QRegularExpression("\\bincludetext\\b")));
-	setCheckIfChanged(ui.guardwhitespaceCheck, opts.contains(QRegularExpression("\\bguardwhitespace\\b")));
-	setCheckIfChanged(ui.includecheckCheck, opts.contains(QRegularExpression("\\bincludecheck\\b")));
-	setCheckIfChanged(ui.includecheckintextCheck, opts.contains(QRegularExpression("\\bincludecheckintext\\b")));
-	setCheckIfChanged(ui.parseCheck, opts.contains(QRegularExpression("\\bparse\\b")));
-	setCheckIfChanged(ui.parsefncCheck, opts.contains(QRegularExpression("\\bparsefnc\\b")));
+	setCheckIfChanged(ui.includetextCheck, optHasKeyword(tokens, "includetext"));
+	setCheckIfChanged(ui.guardwhitespaceCheck, optHasKeyword(tokens, "guardwhitespace"));
+	setCheckIfChanged(ui.includecheckCheck, optHasKeyword(tokens, "includecheck"));
+	setCheckIfChanged(ui.includecheckintextCheck, optHasKeyword(tokens, "includecheckintext"));
+	setCheckIfChanged(ui.parseCheck, optHasKeyword(tokens, "parse"));
+	setCheckIfChanged(ui.parsefncCheck, optHasKeyword(tokens, "parsefnc"));
 
 	QString enc = map[ui.bcCombo->currentText()].command;
 	const BarcodeEncoderUI& eui = encoderUI[enc];
 	QString combo1Key = eui.combo1.key.isEmpty() ? "version" : eui.combo1.key;
 	QString combo2Key = eui.combo2.key.isEmpty() ? "eclevel" : eui.combo2.key;
 
-	QRegularExpression rxf("\\b" + QRegularExpression::escape(combo1Key) + "=(\\S*)\\b");
-	QRegularExpressionMatch matchf = rxf.match(opts);
-	int fmtIdx = matchf.hasMatch() ? ui.formatCombo->findText(matchf.captured(1)) : 0;
+	QString fmtVal = optGetValue(tokens, combo1Key);
+	int fmtIdx = fmtVal.isNull() ? 0 : ui.formatCombo->findText(fmtVal);
 	if (fmtIdx == -1)
 		fmtIdx = 0;
 	if (ui.formatCombo->currentIndex() != fmtIdx)
@@ -677,9 +686,8 @@ void BarcodeGenerator::updateUIFromOptionsText()
 		ui.formatCombo->blockSignals(false);
 	}
 
-	QRegularExpression rxe("\\b" + QRegularExpression::escape(combo2Key) + "=(\\S*)\\b");
-	QRegularExpressionMatch matche = rxe.match(opts);
-	int eccIdx = matche.hasMatch() ? ui.eccCombo->findText(matche.captured(1)) : 0;
+	QString eccVal = optGetValue(tokens, combo2Key);
+	int eccIdx = eccVal.isNull() ? 0 : ui.eccCombo->findText(eccVal);
 	if (eccIdx == -1)
 		eccIdx = 0;
 	if (ui.eccCombo->currentIndex() != eccIdx)
@@ -690,47 +698,40 @@ void BarcodeGenerator::updateUIFromOptionsText()
 	}
 
 	// Sync inkspread slider from options text
-	QRegularExpression rxInk("\\binkspread=(\\S*)");
-	QRegularExpressionMatch matchInk = rxInk.match(opts);
-	int inkVal = 0;
-	if (matchInk.hasMatch())
-		inkVal = qBound(0, (int)(matchInk.captured(1).toDouble() * 100), 25);
-	if (ui.inkspreadSlider->value() != inkVal)
+	QString inkVal = optGetValue(tokens, "inkspread");
+	int inkInt = inkVal.isNull() ? 0 : qBound(0, (int)(inkVal.toDouble() * 100), 25);
+	if (ui.inkspreadSlider->value() != inkInt)
 	{
 		ui.inkspreadSlider->blockSignals(true);
-		ui.inkspreadSlider->setValue(inkVal);
+		ui.inkspreadSlider->setValue(inkInt);
 		ui.inkspreadSlider->blockSignals(false);
 	}
-	ui.inkspreadValue->setText(QString::number(inkVal / 100.0, 'f', 2));
-
+	ui.inkspreadValue->setText(QString::number(inkInt / 100.0, 'f', 2));
 
 	// Sync color members from options text
 	ScColor parsed;
 
-	QRegularExpression rxLn("\\bbarcolor=(\\w+)");
-	QRegularExpressionMatch mLn = rxLn.match(opts);
-	if (mLn.hasMatch() && parseBwippColor(mLn.captured(1), parsed) && !(parsed == lnColor))
+	QString lnVal = optGetValue(tokens, "barcolor");
+	if (!lnVal.isNull() && parseBwippColor(lnVal, parsed) && !(parsed == lnColor))
 	{
 		lnColor = parsed;
-		ui.linesLabel->setToolTip(mLn.captured(1));
+		ui.linesLabel->setToolTip(lnVal);
 		paintColorSample(ui.linesLabel, lnColor);
 	}
 
-	QRegularExpression rxBg("\\bbackgroundcolor=(\\w+)");
-	QRegularExpressionMatch mBg = rxBg.match(opts);
-	if (mBg.hasMatch() && parseBwippColor(mBg.captured(1), parsed) && !(parsed == bgColor))
+	QString bgVal = optGetValue(tokens, "backgroundcolor");
+	if (!bgVal.isNull() && parseBwippColor(bgVal, parsed) && !(parsed == bgColor))
 	{
 		bgColor = parsed;
-		ui.bgLabel->setToolTip(mBg.captured(1));
+		ui.bgLabel->setToolTip(bgVal);
 		paintColorSample(ui.bgLabel, bgColor);
 	}
 
-	QRegularExpression rxTxt("\\btextcolor=(\\w+)");
-	QRegularExpressionMatch mTxt = rxTxt.match(opts);
-	if (mTxt.hasMatch() && parseBwippColor(mTxt.captured(1), parsed) && !(parsed == txtColor))
+	QString txtVal = optGetValue(tokens, "textcolor");
+	if (!txtVal.isNull() && parseBwippColor(txtVal, parsed) && !(parsed == txtColor))
 	{
 		txtColor = parsed;
-		ui.txtLabel->setToolTip(mTxt.captured(1));
+		ui.txtLabel->setToolTip(txtVal);
 		paintColorSample(ui.txtLabel, txtColor);
 	}
 }
@@ -1061,11 +1062,12 @@ QString BarcodeGenerator::buildPSCommand()
 	QString opts = ui.optionsEdit->text();
 
 	// Only append default colors for values NOT already in the options string
-	if (!opts.contains(QRegularExpression("\\bbarcolor=")))
+	QStringList tokens = opts.split(' ', Qt::SkipEmptyParts);
+	if (optGetValue(tokens, "barcolor").isNull())
 		opts += " barcolor=" + lnColor.name().replace('#', "").toUpper();
-	if (!opts.contains(QRegularExpression("\\bbackgroundcolor=")))
+	if (optGetValue(tokens, "backgroundcolor").isNull())
 		opts += " showbackground backgroundcolor=" + bgColor.name().replace('#', "").toUpper();
-	if (!opts.contains(QRegularExpression("\\btextcolor=")))
+	if (optGetValue(tokens, "textcolor").isNull())
 		opts += " textcolor=" + txtColor.name().replace('#', "").toUpper();
 
 	// Assemble PS from encoder and requirement bodies
