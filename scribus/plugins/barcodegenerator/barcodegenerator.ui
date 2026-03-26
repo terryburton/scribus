@@ -8,9 +8,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>504</width>
-    <height>541</height>
+    <width>720</width>
+    <height>800</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>720</width>
+    <height>800</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>720</width>
+    <height>800</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Insert Barcode</string>
@@ -31,10 +43,10 @@
    <property name="bottomMargin">
     <number>9</number>
    </property>
-   <item row="4" column="1" colspan="2">
+   <item row="4" column="1" colspan="2" alignment="Qt::AlignTop">
     <widget class="QGroupBox" name="colorBox">
      <property name="title">
-      <string>Colors</string>
+      <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="2" column="1">
@@ -136,7 +148,7 @@
      </layout>
     </widget>
    </item>
-   <item row="8" column="0" colspan="3">
+   <item row="10" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
@@ -167,48 +179,22 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" rowspan="2">
+   <item row="4" column="0">
     <widget class="QGroupBox" name="bcodeBox">
      <property name="title">
-      <string>Options</string>
+      <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="includecheckCheck">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="includetextCheck">
         <property name="toolTip">
-         <string>Generate and include a checksum in barcode</string>
+         <string>If checked, there will be numbers in the barcode too</string>
         </property>
         <property name="text">
-         <string>Add checksum</string>
+         <string>Show readable text</string>
         </property>
         <property name="shortcut">
-         <string>Alt+N</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="formatLabel">
-        <property name="text">
-         <string>Version:</string>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-        <property name="buddy">
-         <cstring>formatCombo</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="includecheckintextCheck">
-        <property name="toolTip">
-         <string>Include the checksum digit in the barcode text</string>
-        </property>
-        <property name="text">
-         <string>Display checksum</string>
-        </property>
-        <property name="shortcut">
-         <string>Alt+U</string>
+         <string>Alt+I</string>
         </property>
        </widget>
       </item>
@@ -225,74 +211,178 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="includecheckCheck">
+        <property name="toolTip">
+         <string>Generate and include a checksum in barcode</string>
+        </property>
+        <property name="text">
+         <string>Add checksum</string>
+        </property>
+        <property name="shortcut">
+         <string>Alt+N</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QCheckBox" name="includecheckintextCheck">
+        <property name="toolTip">
+         <string>Include the checksum digit in the barcode text</string>
+        </property>
+        <property name="text">
+         <string>Display checksum</string>
+        </property>
+        <property name="shortcut">
+         <string>Alt+U</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QCheckBox" name="parseCheck">
         <property name="text">
          <string>^NNN as ASCII</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="eccLabel">
-        <property name="text">
-         <string>Error correction level:</string>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-        <property name="buddy">
-         <cstring>eccCombo</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
+      <item row="1" column="1">
        <widget class="QCheckBox" name="parsefncCheck">
         <property name="text">
          <string>Parse specials</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="includetextCheck">
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="dottyCheck">
         <property name="toolTip">
-         <string>If checked, there will be numbers in the barcode too</string>
+         <string>Render the barcode as circular dots instead of squares</string>
         </property>
         <property name="text">
-         <string>Show readable text</string>
-        </property>
-        <property name="shortcut">
-         <string>Alt+I</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
+         <string>Render as dots</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="formatCombo">
-        <property name="minimumSize">
-         <size>
-          <width>125</width>
-          <height>0</height>
-         </size>
+      <item row="1" column="3">
+       <widget class="QCheckBox" name="cropCheck">
+        <property name="toolTip">
+         <string>Remove the quiet zone from the barcode</string>
         </property>
+        <property name="text">
+         <string>Crop quiet zone</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="formatLabel">
+        <property name="text">
+         <string>Version:</string>
+        </property>
+        <property name="buddy">
+         <cstring>formatCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="formatCombo">
         <property name="toolTip">
          <string>Version of the symbol</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="eccCombo">
-        <property name="minimumSize">
-         <size>
-          <width>125</width>
-          <height>0</height>
-         </size>
+      <item row="2" column="2">
+       <widget class="QLabel" name="eccLabel">
+        <property name="text">
+         <string>EC level:</string>
         </property>
+        <property name="buddy">
+         <cstring>eccCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QComboBox" name="eccCombo">
         <property name="toolTip">
          <string>Error correction level</string>
         </property>
        </widget>
+      </item>
+      <item row="3" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="slidersLayout">
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="heightLabel">
+          <property name="text">
+           <string>Bar height:</string>
+          </property>
+          <property name="buddy">
+           <cstring>heightSlider</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="heightSlider">
+          <property name="toolTip">
+           <string>Height of the bars (Auto = default)</string>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>300</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="heightValue">
+          <property name="text">
+           <string>Auto</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="inkspreadLabel">
+          <property name="text">
+           <string>Reduction:</string>
+          </property>
+          <property name="buddy">
+           <cstring>inkspreadSlider</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="inkspreadSlider">
+          <property name="toolTip">
+           <string>Ink spread compensation for print output (0 = none)</string>
+          </property>
+          <property name="minimum">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <number>25</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="inkspreadValue">
+          <property name="text">
+           <string>0.00</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -306,40 +396,47 @@
       </size>
      </property>
      <property name="title">
-      <string>Type</string>
+      <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="bcFamilyLabel">
         <property name="text">
-         <string>Barcode Family:</string>
+         <string>&amp;Barcode:</string>
+        </property>
+        <property name="buddy">
+         <cstring>bcFamilyCombo</cstring>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="bcFamilyCombo"/>
+       <layout class="QHBoxLayout" name="bcCombosLayout">
+        <item>
+         <widget class="QComboBox" name="bcFamilyCombo">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="bcCombo">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Select one of the available barcode types here</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="bcLabel">
-        <property name="text">
-         <string>&amp;Barcode:</string>
-        </property>
-        <property name="wordWrap">
-         <bool>false</bool>
-        </property>
-        <property name="buddy">
-         <cstring>bcCombo</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="bcCombo">
-        <property name="toolTip">
-         <string>Select one of the available barcode types here</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
        <widget class="QLabel" name="codeLabel">
         <property name="text">
          <string>&amp;Contents:</string>
@@ -352,7 +449,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="1" column="1">
        <widget class="QLineEdit" name="codeEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -371,7 +468,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="0" column="2">
        <widget class="QPushButton" name="resetButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -393,7 +490,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="1" column="2">
        <widget class="QPushButton" name="helpSymbologiesButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -415,7 +512,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="2" column="2">
        <widget class="QPushButton" name="helpOptionsButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -437,7 +534,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="optionsLabel">
         <property name="text">
          <string>Options:</string>
@@ -447,57 +544,28 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="optionsEdit">
+      <item row="2" column="1">
+       <widget class="QPlainTextEdit" name="optionsEdit">
         <property name="minimumSize">
          <size>
           <width>0</width>
           <height>21</height>
          </size>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>21</height>
+         </size>
+        </property>
         <property name="toolTip">
          <string>Advanced options for the barcode</string>
         </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QGroupBox" name="inkspreadBox">
-     <property name="title">
-      <string>Module Reduction</string>
-     </property>
-     <layout class="QHBoxLayout" name="inkspreadLayout">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QSlider" name="inkspreadSlider">
-        <property name="toolTip">
-         <string>Ink spread compensation for print output (0 = none)</string>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAsNeeded</enum>
         </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>25</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="inkspreadValue">
-        <property name="text">
-         <string>0.00</string>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>
        </widget>
       </item>
@@ -505,7 +573,665 @@
     </widget>
    </item>
    <item row="6" column="0" colspan="3">
+    <widget class="QGroupBox" name="textBox">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="textGridLayout">
+      <item row="0" column="0" colspan="8">
+       <layout class="QHBoxLayout" name="textTabLayout">
+        <item>
+         <widget class="QLabel" name="textBlockLabel">
+          <property name="text">
+           <string>Text block:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="textfontLabel">
+        <property name="text">
+         <string>Font:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textfontCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="textfontCombo">
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OCR-A</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OCR-B</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Helvetica</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Helvetica-Bold</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Courier</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Courier-Bold</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="textsizeLabel">
+        <property name="text">
+         <string>Size:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textsizeCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QComboBox" name="textsizeCombo">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QLabel" name="textdirectionLabel">
+        <property name="text">
+         <string>Direction:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textdirectionCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QComboBox" name="textdirectionCombo">
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Forward</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Backward</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Upward</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Downward</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="textgapsLabel">
+        <property name="text">
+         <string>Gaps:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textgapsCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QComboBox" name="textgapsCombo">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="textxalignLabel">
+        <property name="text">
+         <string>X align:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textxalignCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="textxalignCombo">
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Off Left</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Left</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Center</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Right</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Off Right</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Justify</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="textyalignLabel">
+        <property name="text">
+         <string>Y align:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textyalignCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QComboBox" name="textyalignCombo">
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Above</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Top</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Center</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Bottom</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Below</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Justify</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QLabel" name="textxoffsetLabel">
+        <property name="text">
+         <string>X offset:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textxoffsetCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QComboBox" name="textxoffsetCombo">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QLabel" name="textyoffsetLabel">
+        <property name="text">
+         <string>Y offset:</string>
+        </property>
+        <property name="buddy">
+         <cstring>textyoffsetCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="7">
+       <widget class="QComboBox" name="textyoffsetCombo">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="8">
+       <layout class="QHBoxLayout" name="alttextRowLayout">
+        <item>
+         <widget class="QLabel" name="alttextLabel">
+          <property name="text">
+           <string>Alt text:</string>
+          </property>
+          <property name="buddy">
+           <cstring>alttextEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPlainTextEdit" name="alttextEdit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Replacement human-readable text</string>
+          </property>
+          <property name="lineWrapMode">
+           <enum>QPlainTextEdit::WidgetWidth</enum>
+          </property>
+          <property name="wordWrapMode">
+           <enum>QTextOption::WrapAnywhere</enum>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="alttextsubspaceLabel">
+          <property name="text">
+           <string>&lt;SP&gt;</string>
+          </property>
+          <property name="buddy">
+           <cstring>alttextsubspaceCombo</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="alttextsubspaceCombo">
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Character to substitute for spaces in the human-readable text</string>
+          </property>
+          <item>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>~</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>+</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="alttextsplitLabel">
+          <property name="text">
+           <string>&lt;CR&gt;</string>
+          </property>
+          <property name="buddy">
+           <cstring>alttextsplitCombo</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="alttextsplitCombo">
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Character at which to split the human-readable text into multiple lines</string>
+          </property>
+          <item>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>|</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>/</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="3">
+    <widget class="QGroupBox" name="borderBox">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QHBoxLayout" name="borderLayout">
+      <item>
+       <widget class="QRadioButton" name="borderBorderRadio">
+        <property name="text">
+         <string>Border</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="borderBearerRadio">
+        <property name="text">
+         <string>Bearer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="borderNoneRadio">
+        <property name="text">
+         <string>None</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="borderWidthPair">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="borderwidthLabel">
+          <property name="text">
+           <string>Width:</string>
+          </property>
+          <property name="buddy">
+           <cstring>borderwidthSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="borderwidthSpin">
+          <property name="specialValueText">
+           <string>Auto</string>
+          </property>
+          <property name="decimals">
+           <number>2</number>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="borderLPair">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="borderleftLabel">
+          <property name="text">
+           <string>L:</string>
+          </property>
+          <property name="buddy">
+           <cstring>borderleftSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="borderleftSpin">
+          <property name="specialValueText">
+           <string>Auto</string>
+          </property>
+          <property name="decimals">
+           <number>2</number>
+          </property>
+          <property name="minimum">
+           <double>-0.500000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="borderRPair">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="borderrightLabel">
+          <property name="text">
+           <string>R:</string>
+          </property>
+          <property name="buddy">
+           <cstring>borderrightSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="borderrightSpin">
+          <property name="specialValueText">
+           <string>Auto</string>
+          </property>
+          <property name="decimals">
+           <number>2</number>
+          </property>
+          <property name="minimum">
+           <double>-0.500000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="borderTPair">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="bordertopLabel">
+          <property name="text">
+           <string>T:</string>
+          </property>
+          <property name="buddy">
+           <cstring>bordertopSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="bordertopSpin">
+          <property name="specialValueText">
+           <string>Auto</string>
+          </property>
+          <property name="decimals">
+           <number>2</number>
+          </property>
+          <property name="minimum">
+           <double>-0.500000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="borderBPair">
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="borderbottomLabel">
+          <property name="text">
+           <string>B:</string>
+          </property>
+          <property name="buddy">
+           <cstring>borderbottomSpin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="borderbottomSpin">
+          <property name="specialValueText">
+           <string>Auto</string>
+          </property>
+          <property name="decimals">
+           <number>2</number>
+          </property>
+          <property name="minimum">
+           <double>-0.500000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="3">
     <widget class="QLabel" name="sampleLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>450</width>

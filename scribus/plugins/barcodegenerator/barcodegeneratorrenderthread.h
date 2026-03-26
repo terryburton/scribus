@@ -20,7 +20,7 @@ class BarcodeGeneratorRenderThread : public QThread
 public:
 	BarcodeGeneratorRenderThread(QObject* parent = nullptr);
 	~BarcodeGeneratorRenderThread();
-	void render(const QString&);
+	void render(const QString& psCommand, int previewWidth = 440, int previewHeight = 150);
 
 signals:
 	void renderedImage(QString);
@@ -32,6 +32,8 @@ private:
 	QMutex mutex;
 	QWaitCondition condition;
 	QString psCommand;
+	int previewWidth { 440 };
+	int previewHeight { 150 };
 	bool restart;
 	bool abort;
 

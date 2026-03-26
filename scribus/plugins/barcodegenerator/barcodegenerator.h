@@ -46,6 +46,9 @@ struct BarcodeEncoderUI {
 	bool includecheckintext = false;
 	bool parse = false;
 	bool parsefnc = false;
+	bool dotty = false;
+	bool dottyForced = false;
+	bool height = false;
 };
 
 struct BarcodeFamilyUI {
@@ -118,6 +121,9 @@ class BarcodeGenerator : public QDialog
 		bool generateBarcode(PageItem* replaceItem = nullptr, double placeX = -1, double placeY = -1);
 
 	protected:
+		bool eventFilter(QObject* obj, QEvent* event) override;
+		void mousePressEvent(QMouseEvent* event) override;
+
 		//! GUI namespace content. See designer.
 		Ui::BarcodeGeneratorBase ui;
 
@@ -154,6 +160,10 @@ class BarcodeGenerator : public QDialog
 		PageItem* m_editItem {nullptr};
 
 	private:
+		int m_activeTextTab { 1 };
+		QString textOptKey(const QString& suffix) const;
+		QString altTextKey(const QString& subkey = QString()) const;
+
 		std::optional<bwipp::BWIPP> m_bwipp;
 		HelpBrowser* m_helpBrowser {nullptr};
 		void loadUIConfig(const QString& path);
@@ -162,6 +172,7 @@ class BarcodeGenerator : public QDialog
 		QString buildPSCommand();
 		BarcodeGeneratorRenderThread thread;
 		QTimer* syncOptionsUITimer { nullptr };
+		QTimer* syncOptionsTextTimer { nullptr };
 
 		/*! \brief Shared UI population from encoder/content/options */
 		void loadBarcode(const QString& encoder, const QString& content, const QString& options);
@@ -169,6 +180,8 @@ class BarcodeGenerator : public QDialog
 		void updateOptionValue(const QString& key, const QString& value);
 		/*! \brief Ensure a boolean option is present in the options text field */
 		void ensureOptionPresent(const QString& key);
+
+		void setControlsEnabled(bool enabled);
 
 	protected slots:
 		void paintBarcode();
@@ -186,16 +199,6 @@ class BarcodeGenerator : public QDialog
 		void okButton_pressed();
 		void cancelButton_pressed();
 	private slots:
-		void on_includetextCheck_stateChanged(int arg1);
-		void on_includecheckCheck_stateChanged(int arg1);
-		void on_includecheckintextCheck_stateChanged(int arg1);
-		void on_parseCheck_stateChanged(int arg1);
-		void on_parsefncCheck_stateChanged(int arg1);
-		void on_formatCombo_currentIndexChanged(int index);
-		void on_eccCombo_currentIndexChanged(int index);
-		void on_guardwhitespaceCheck_stateChanged(int arg1);
-		void on_optionsEdit_textChanged(const QString &arg1);
-		void on_inkspreadSlider_valueChanged(int value);
 		void syncOptionsUI();
 };
 
