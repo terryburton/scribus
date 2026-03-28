@@ -1,6 +1,6 @@
 %!PS
 
-% Barcode Writer in Pure PostScript - Version 2026-03-29
+% Barcode Writer in Pure PostScript - Version 2026-03-30
 % https://bwipp.terryburton.co.uk
 %
 % Copyright (c) 2004-2024 Terry Burton
@@ -32,7 +32,7 @@
 % --BEGIN TEMPLATE--
 
 % --BEGIN RESOURCE preamble--
-%%BeginResource: Category uk.co.terryburton.bwipp 0.0 2026032900 28861 32102
+%%BeginResource: Category uk.co.terryburton.bwipp 0.0 2026033000 28861 32102
 %%BeginData:          6 ASCII Lines
 currentglobal
 true setglobal
@@ -46,7 +46,7 @@ setglobal
 
 % --BEGIN RESOURCE raiseerror--
 % --REQUIRES preamble--
-%%BeginResource: uk.co.terryburton.bwipp raiseerror 0.0 2026032900 38141 34460
+%%BeginResource: uk.co.terryburton.bwipp raiseerror 0.0 2026033000 38141 34460
 %%BeginData:         18 ASCII Lines
 currentglobal
 true setglobal
@@ -72,7 +72,7 @@ setglobal
 
 % --BEGIN RESOURCE setuphooks--
 % --REQUIRES preamble--
-%%BeginResource: uk.co.terryburton.bwipp setuphooks 0.0 2026032900 42867 39029
+%%BeginResource: uk.co.terryburton.bwipp setuphooks 0.0 2026033000 42867 39029
 %%BeginData:         62 ASCII Lines
 currentglobal
 true setglobal
@@ -142,8 +142,8 @@ setglobal
 
 % --BEGIN RESOURCE processoptions--
 % --REQUIRES preamble raiseerror setuphooks--
-%%BeginResource: uk.co.terryburton.bwipp processoptions 0.0 2026032900 77758 77236
-%%BeginData:        206 ASCII Lines
+%%BeginResource: uk.co.terryburton.bwipp processoptions 0.0 2026033000 77045 76106
+%%BeginData:        224 ASCII Lines
 currentglobal
 true setglobal
 /setpacking where {pop currentpacking true setpacking} if
@@ -165,6 +165,36 @@ begin
     /integertype { dup cvr dup cvi ne {dup not} if cvi } bind  % Force type error when precision is lost or boolean is given
 >> readonly def
 
+% Alias maps: old option names => canonical names
+/processoptions.aliases <<
+    (alttext)              /text1
+    (alttextsubspace)      /text1subspace
+    (alttextsplit)         /text1split
+    (textlinegaps)         /text1linegaps
+    (textcolor)            /text1color
+    (textxalign)           /text1xalign
+    (textyalign)           /text1yalign
+    (textdirection)        /text1direction
+    (textfont)             /text1font
+    (textsize)             /text1size
+    (textxoffset)          /text1xoffset
+    (textyoffset)          /text1yoffset
+    (textgaps)             /text1gaps
+    (extratext)            /text2
+    (extratextsubspace)    /text2subspace
+    (extratextsplit)       /text2split
+    (extratextlinegaps)    /text2linegaps
+    (extratextcolor)       /text2color
+    (extratextxalign)      /text2xalign
+    (extratextyalign)      /text2yalign
+    (extratextdirection)   /text2direction
+    (extratextfont)        /text2font
+    (extratextsize)        /text2size
+    (extratextxoffset)     /text2xoffset
+    (extratextyoffset)     /text2yoffset
+    (extratextgaps)        /text2gaps
+>> readonly def
+
 /processoptions.apply {
 
     %
@@ -182,11 +212,20 @@ begin
     } if
 
     %
-    % Apply options that exist in currentdict, converting values to existing types
+    % Apply options that exist in currentdict, converting values to existing types.
+    % Unknown options are checked against the alias map and applied to the canonical name.
     %
     mark exch dup
     {
-        exch dup currentdict exch known {
+        exch dup currentdict exch known not {  % Not known, but we might have been given an alias
+            //processoptions.aliases 1 index 2 copy known {
+                get dup 4 index exch known not { exch } if  % Replace alias key with canonical, if no clash
+                pop
+            } {
+                pop pop
+            } ifelse
+        } if
+        dup currentdict exch known {
             dup load type 3 -1 roll exch
             //processoptions.typemap exch get stopped {
                 pop pop
@@ -310,33 +349,12 @@ begin
 } bind def
 
 %
-%  Resolve alias options: for each alias in the table, if the user set
-%  the alias in their options dict, copy the value to the primary name.
-%  User-set primary always wins.
-%
-/processoptions.resolve {              % optionsdict aliastable --
-    {                                  % optdict alias-key primary-name
-        2 index 1 index known {        % user set primary? => primary wins
-            pop pop
-        } {
-            2 index 2 index known {    % user set alias in options?
-                exch load def          % copy alias value to primary
-            } {
-                pop pop
-            } ifelse
-        } ifelse
-    } forall
-    pop  % optdict
-} bind def
-
-%
 %  Dispatcher table
 %
 /processoptions.dispatch <<
     /apply         //processoptions.apply
     /generategroup //processoptions.generate
     /collectgroup  //processoptions.collect
-    /resolve       //processoptions.resolve
 >> readonly def
 
 /processoptions {
@@ -356,7 +374,7 @@ setglobal
 
 % --BEGIN RESOURCE parseinput--
 % --REQUIRES preamble raiseerror setuphooks--
-%%BeginResource: uk.co.terryburton.bwipp parseinput 0.0 2026032900 67233 66688
+%%BeginResource: uk.co.terryburton.bwipp parseinput 0.0 2026033000 67233 66688
 %%BeginData:        201 ASCII Lines
 currentglobal
 true setglobal
@@ -565,7 +583,7 @@ setglobal
 
 % --BEGIN RESOURCE gs1process--
 % --REQUIRES preamble parseinput raiseerror--
-%%BeginResource: uk.co.terryburton.bwipp gs1process 0.0 2026032900 619828 648238
+%%BeginResource: uk.co.terryburton.bwipp gs1process 0.0 2026033000 619828 648238
 %%BeginData:       3373 ASCII Lines
 currentglobal
 true setglobal
@@ -3946,7 +3964,7 @@ setglobal
 
 % --BEGIN RESOURCE setanycolor--
 % --REQUIRES preamble setuphooks--
-%%BeginResource: uk.co.terryburton.bwipp setanycolor 0.0 2026032900 47627 44058
+%%BeginResource: uk.co.terryburton.bwipp setanycolor 0.0 2026033000 47627 44058
 %%BeginData:         58 ASCII Lines
 currentglobal
 true setglobal
@@ -4012,7 +4030,7 @@ setglobal
 
 % --BEGIN RESOURCE fifocache--
 % --REQUIRES preamble--
-%%BeginResource: uk.co.terryburton.bwipp fifocache 0.0 2026032900 46083 42351
+%%BeginResource: uk.co.terryburton.bwipp fifocache 0.0 2026033000 46083 42351
 %%BeginData:        108 ASCII Lines
 currentglobal
 true setglobal
@@ -4128,8 +4146,8 @@ setglobal
 
 % --BEGIN RESOURCE rendertext--
 % --REQUIRES preamble processoptions setanycolor--
-%%BeginResource: uk.co.terryburton.bwipp rendertext 0.0 2026032900 202983 229121
-%%BeginData:        429 ASCII Lines
+%%BeginResource: uk.co.terryburton.bwipp rendertext 0.0 2026033000 198176 221567
+%%BeginData:        386 ASCII Lines
 currentglobal
 true setglobal
 /setpacking where {pop currentpacking true setpacking} if
@@ -4189,40 +4207,6 @@ begin
     (gaps)       0.0
 >> readonly def
 
-% Alias mapping: old text1 option names => new primary names
-/rendertext.text1aliases <<
-    (alttext)          /text1
-    (alttextsubspace)  /text1subspace
-    (alttextsplit)     /text1split
-    (textlinegaps)     /text1linegaps
-    (textcolor)        /text1color
-    (textxalign)       /text1xalign
-    (textyalign)       /text1yalign
-    (textdirection)    /text1direction
-    (textfont)         /text1font
-    (textsize)         /text1size
-    (textxoffset)      /text1xoffset
-    (textyoffset)      /text1yoffset
-    (textgaps)         /text1gaps
->> readonly def
-
-% Alias mapping: old text2/extratext names => new primary names
-/rendertext.text2aliases <<
-    (extratext)          /text2
-    (extratextsubspace)  /text2subspace
-    (extratextsplit)     /text2split
-    (extratextlinegaps)  /text2linegaps
-    (extratextcolor)     /text2color
-    (extratextxalign)    /text2xalign
-    (extratextyalign)    /text2yalign
-    (extratextdirection) /text2direction
-    (extratextfont)      /text2font
-    (extratextsize)      /text2size
-    (extratextxoffset)   /text2xoffset
-    (extratextyoffset)   /text2yoffset
-    (extratextgaps)      /text2gaps
->> readonly def
-
 % Validation dicts
 /rendertext.xalignopts <<
     /offleft dup  /left dup  /center dup  /right dup  /offright dup  /justify dup
@@ -4235,14 +4219,6 @@ begin
 /rendertext.directionoptions <<
     /forward dup  /backward dup  /upward dup  /downward dup
 >> readonly def
-
-%
-%  Resolve text1 and text2 aliases after processoptions
-%
-/rendertext.resolvealiases {     % optionsdict --
-    dup //rendertext.text1aliases /resolve //processoptions exec
-    //rendertext.text2aliases /resolve //processoptions exec
-} bind def
 
 %
 %  Validate a single text option dict
@@ -4545,7 +4521,6 @@ begin
     /groupoptions     //rendertext.groupoptions
     /render           //rendertext.render
     /validateoptions  //rendertext.validateoptions
-    /resolvealiases   //rendertext.resolvealiases
 >> readonly def
 
 /rendertext {
@@ -4565,8 +4540,8 @@ setglobal
 
 % --BEGIN RENDERER renlinear--
 % --REQUIRES preamble raiseerror processoptions setanycolor rendertext--
-%%BeginResource: uk.co.terryburton.bwipp renlinear 0.0 2026032900 97136 96266
-%%BeginData:        329 ASCII Lines
+%%BeginResource: uk.co.terryburton.bwipp renlinear 0.0 2026033000 94255 93385
+%%BeginData:        299 ASCII Lines
 currentglobal
 true setglobal
 /setpacking where {pop currentpacking true setpacking} if
@@ -4598,35 +4573,6 @@ begin
     /text1xalign (unset) def
     /text1yalign (unset) def
 
-    % text1 aliases
-    /textcolor (unset) def
-    /textxalign (unset) def
-    /textyalign (unset) def
-    /textdirection (forward) def
-    /textfont (Courier) def
-    /textsize 10.0 def
-    /textxoffset 0.0 def
-    /textyoffset 0.0 def
-    /textgaps 0.0 def
-    /textlinegaps 1.2 def
-    /alttext () def
-    /alttextsubspace () def  % Misnomer
-    /alttextsplit () def     % Misnomer
-
-    % text2 aliases
-    /extratext () def
-    /extratextcolor (unset) def
-    /extratextxalign (left) def
-    /extratextyalign (above) def
-    /extratextdirection (forward) def
-    /extratextfont (Courier) def
-    /extratextsize 10.0 def
-    /extratextxoffset 0.0 def
-    /extratextyoffset 0.0 def
-    /extratextgaps 0.0 def
-    /extratextlinegaps 1.2 def
-    /extratextsubspace () def
-    /extratextsplit () def
 
     /includetext false def
     /barcolor (unset) def
@@ -4655,7 +4601,6 @@ begin
     opt currentdict /opt undef /apply //processoptions exec /options exch def
 
     % Resolve text aliases: alttext=>text1, extratext=>text2
-    options /resolvealiases //rendertext exec
 
     % Collect into an text options array
     /textopts (text) 9 /groupoptions //rendertext exec /collectgroup //processoptions exec def
@@ -4902,8 +4847,8 @@ setglobal
 
 % --BEGIN RENDERER renmatrix--
 % --REQUIRES preamble raiseerror setuphooks processoptions setanycolor rendertext--
-%%BeginResource: uk.co.terryburton.bwipp renmatrix 0.0 2026032900 124339 126910
-%%BeginData:        577 ASCII Lines
+%%BeginResource: uk.co.terryburton.bwipp renmatrix 0.0 2026033000 118074 124077
+%%BeginData:        546 ASCII Lines
 currentglobal
 true setglobal
 /setpacking where {pop currentpacking true setpacking} if
@@ -5029,36 +4974,6 @@ begin
     /text1xalign (unset) def
     /text1yalign (unset) def
 
-    % text1 aliases
-    /textcolor (unset) def
-    /textxalign (unset) def
-    /textyalign (unset) def
-    /textdirection (forward) def
-    /textfont (Courier) def
-    /textsize 10.0 def
-    /textxoffset 0.0 def
-    /textyoffset 0.0 def
-    /textgaps 0.0 def
-    /textlinegaps 1.2 def
-    /alttext () def
-    /alttextsubspace () def  % Misnomer
-    /alttextsplit () def     % Misnomer
-
-    % text2 aliases
-    /extratext () def
-    /extratextcolor (unset) def
-    /extratextxalign (left) def
-    /extratextyalign (above) def
-    /extratextdirection (forward) def
-    /extratextfont (Courier) def
-    /extratextsize 10.0 def
-    /extratextxoffset 0.0 def
-    /extratextyoffset 0.0 def
-    /extratextgaps 0.0 def
-    /extratextlinegaps 1.2 def
-    /extratextsubspace () def
-    /extratextsplit () def
-
     /includetext false def
     /showborder false def
     /borderleft 0.0 def
@@ -5071,7 +4986,6 @@ begin
     opt currentdict /opt undef /apply //processoptions exec /options exch def
 
     % Resolve text aliases: alttext=>text1, extratext=>text2
-    options /resolvealiases //rendertext exec
 
     inkspread null eq {
         /uk.co.terryburton.bwipp.global_ctx dup where {
@@ -5487,7 +5401,7 @@ setglobal
 
 % --BEGIN RENDERER renmaximatrix--
 % --REQUIRES preamble raiseerror setuphooks processoptions setanycolor--
-%%BeginResource: uk.co.terryburton.bwipp renmaximatrix 0.0 2026032900 74983 71122
+%%BeginResource: uk.co.terryburton.bwipp renmaximatrix 0.0 2026033000 74895 71018
 %%BeginData:        149 ASCII Lines
 currentglobal
 true setglobal
@@ -5648,7 +5562,7 @@ setglobal
 % --EXAM: 90200
 % --EXOP: includetext guardwhitespace
 % --RNDR: renlinear
-%%BeginResource: uk.co.terryburton.bwipp ean5 0.0 2026032900 68211 71443
+%%BeginResource: uk.co.terryburton.bwipp ean5 0.0 2026033000 68211 71443
 %%BeginData:        137 ASCII Lines
 currentglobal
 true setglobal
@@ -5797,7 +5711,7 @@ setglobal
 % --EXAM: 05
 % --EXOP: includetext guardwhitespace
 % --RNDR: renlinear
-%%BeginResource: uk.co.terryburton.bwipp ean2 0.0 2026032900 66994 70241
+%%BeginResource: uk.co.terryburton.bwipp ean2 0.0 2026033000 66994 70241
 %%BeginData:        123 ASCII Lines
 currentglobal
 true setglobal
@@ -5933,7 +5847,7 @@ setglobal
 % --EXOP: includetext guardwhitespace
 % --RNDR: renlinear
 % --FMLY: Point Of Sale
-%%BeginResource: uk.co.terryburton.bwipp ean13 0.0 2026032900 89281 92418
+%%BeginResource: uk.co.terryburton.bwipp ean13 0.0 2026033000 89281 88986
 %%BeginData:        224 ASCII Lines
 currentglobal
 true setglobal
@@ -6170,7 +6084,7 @@ setglobal
 % --EXOP: includetext guardwhitespace
 % --RNDR: renlinear
 % --FMLY: Point Of Sale
-%%BeginResource: uk.co.terryburton.bwipp ean8 0.0 2026032900 87730 87271
+%%BeginResource: uk.co.terryburton.bwipp ean8 0.0 2026033000 87730 87271
 %%BeginData:        209 ASCII Lines
 currentglobal
 true setglobal
@@ -6392,7 +6306,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Point Of Sale
-%%BeginResource: uk.co.terryburton.bwipp upca 0.0 2026032900 93928 96937
+%%BeginResource: uk.co.terryburton.bwipp upca 0.0 2026033000 93928 96937
 %%BeginData:        261 ASCII Lines
 currentglobal
 true setglobal
@@ -6666,7 +6580,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Point Of Sale
-%%BeginResource: uk.co.terryburton.bwipp upce 0.0 2026032900 97532 100473
+%%BeginResource: uk.co.terryburton.bwipp upce 0.0 2026033000 97516 100561
 %%BeginData:        301 ASCII Lines
 currentglobal
 true setglobal
@@ -6980,7 +6894,7 @@ setglobal
 % --EXOP: includetext guardwhitespace
 % --RNDR: renlinear
 % --FMLY: Point Of Sale
-%%BeginResource: uk.co.terryburton.bwipp isbn 0.0 2026032900 100421 99930
+%%BeginResource: uk.co.terryburton.bwipp isbn 0.0 2026033000 96989 99946
 %%BeginData:        268 ASCII Lines
 currentglobal
 true setglobal
@@ -7261,7 +7175,7 @@ setglobal
 % --EXOP: includetext guardwhitespace
 % --RNDR: renlinear
 % --FMLY: Point Of Sale
-%%BeginResource: uk.co.terryburton.bwipp ismn 0.0 2026032900 97473 96979
+%%BeginResource: uk.co.terryburton.bwipp ismn 0.0 2026033000 93913 96763
 %%BeginData:        247 ASCII Lines
 currentglobal
 true setglobal
@@ -7521,7 +7435,7 @@ setglobal
 % --EXOP: includetext guardwhitespace
 % --RNDR: renlinear
 % --FMLY: Point Of Sale
-%%BeginResource: uk.co.terryburton.bwipp issn 0.0 2026032900 86265 89343
+%%BeginResource: uk.co.terryburton.bwipp issn 0.0 2026033000 86265 85823
 %%BeginData:        190 ASCII Lines
 currentglobal
 true setglobal
@@ -7724,7 +7638,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Specialist
-%%BeginResource: uk.co.terryburton.bwipp mands 0.0 2026032900 77486 77451
+%%BeginResource: uk.co.terryburton.bwipp mands 0.0 2026033000 77486 74019
 %%BeginData:         89 ASCII Lines
 currentglobal
 true setglobal
@@ -7826,7 +7740,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: One-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp code128 0.0 2026032900 227593 229335
+%%BeginResource: uk.co.terryburton.bwipp code128 0.0 2026033000 227505 226079
 %%BeginData:        723 ASCII Lines
 currentglobal
 true setglobal
@@ -8562,7 +8476,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp gs1-128 0.0 2026032900 83081 79480
+%%BeginResource: uk.co.terryburton.bwipp gs1-128 0.0 2026033000 82969 79368
 %%BeginData:        114 ASCII Lines
 currentglobal
 true setglobal
@@ -8689,7 +8603,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp ean14 0.0 2026032900 78908 78364
+%%BeginResource: uk.co.terryburton.bwipp ean14 0.0 2026033000 78908 78364
 %%BeginData:        112 ASCII Lines
 currentglobal
 true setglobal
@@ -8814,7 +8728,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp sscc18 0.0 2026032900 78920 78371
+%%BeginResource: uk.co.terryburton.bwipp sscc18 0.0 2026033000 78920 78371
 %%BeginData:        112 ASCII Lines
 currentglobal
 true setglobal
@@ -8939,7 +8853,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: One-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp code39 0.0 2026032900 75582 78705
+%%BeginResource: uk.co.terryburton.bwipp code39 0.0 2026033000 75582 78705
 %%BeginData:        170 ASCII Lines
 currentglobal
 true setglobal
@@ -9122,7 +9036,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: One-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp code39ext 0.0 2026032900 77018 76749
+%%BeginResource: uk.co.terryburton.bwipp code39ext 0.0 2026033000 76442 76261
 %%BeginData:        112 ASCII Lines
 currentglobal
 true setglobal
@@ -9247,7 +9161,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp code32 0.0 2026032900 72792 72712
+%%BeginResource: uk.co.terryburton.bwipp code32 0.0 2026033000 72792 69280
 %%BeginData:        107 ASCII Lines
 currentglobal
 true setglobal
@@ -9367,7 +9281,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp pzn 0.0 2026032900 72642 72516
+%%BeginResource: uk.co.terryburton.bwipp pzn 0.0 2026033000 72642 69084
 %%BeginData:        104 ASCII Lines
 currentglobal
 true setglobal
@@ -9484,7 +9398,7 @@ setglobal
 % --EXOP: includetext includecheck
 % --RNDR: renlinear
 % --FMLY: One-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp code93 0.0 2026032900 80435 80173
+%%BeginResource: uk.co.terryburton.bwipp code93 0.0 2026033000 77003 80173
 %%BeginData:        172 ASCII Lines
 currentglobal
 true setglobal
@@ -9669,7 +9583,7 @@ setglobal
 % --EXOP: includetext includecheck
 % --RNDR: renlinear
 % --FMLY: One-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp code93ext 0.0 2026032900 77712 77349
+%%BeginResource: uk.co.terryburton.bwipp code93ext 0.0 2026033000 77192 76917
 %%BeginData:        115 ASCII Lines
 currentglobal
 true setglobal
@@ -9797,7 +9711,7 @@ setglobal
 % --EXOP: height=0.5 includecheck includetext includecheckintext
 % --RNDR: renlinear
 % --FMLY: One-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp interleaved2of5 0.0 2026032900 70873 74032
+%%BeginResource: uk.co.terryburton.bwipp interleaved2of5 0.0 2026033000 70873 74032
 %%BeginData:        160 ASCII Lines
 currentglobal
 true setglobal
@@ -9970,7 +9884,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp itf14 0.0 2026032900 75079 74995
+%%BeginResource: uk.co.terryburton.bwipp itf14 0.0 2026033000 75079 74995
 %%BeginData:        115 ASCII Lines
 currentglobal
 true setglobal
@@ -10098,7 +10012,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp identcode 0.0 2026032900 71800 68276
+%%BeginResource: uk.co.terryburton.bwipp identcode 0.0 2026033000 71800 68276
 %%BeginData:         96 ASCII Lines
 currentglobal
 true setglobal
@@ -10207,7 +10121,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp leitcode 0.0 2026032900 71792 68272
+%%BeginResource: uk.co.terryburton.bwipp leitcode 0.0 2026033000 71792 68272
 %%BeginData:         96 ASCII Lines
 currentglobal
 true setglobal
@@ -10316,7 +10230,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp databaromni 0.0 2026032900 137351 136582
+%%BeginResource: uk.co.terryburton.bwipp databaromni 0.0 2026033000 137007 136326
 %%BeginData:        467 ASCII Lines
 currentglobal
 true setglobal
@@ -10796,7 +10710,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp databarstacked 0.0 2026032900 71053 73968
+%%BeginResource: uk.co.terryburton.bwipp databarstacked 0.0 2026033000 74357 70304
 %%BeginData:         81 ASCII Lines
 currentglobal
 true setglobal
@@ -10890,7 +10804,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp databarstackedomni 0.0 2026032900 71153 74048
+%%BeginResource: uk.co.terryburton.bwipp databarstackedomni 0.0 2026033000 74457 70384
 %%BeginData:         81 ASCII Lines
 currentglobal
 true setglobal
@@ -10984,7 +10898,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp databartruncated 0.0 2026032900 71079 73984
+%%BeginResource: uk.co.terryburton.bwipp databartruncated 0.0 2026033000 74383 70320
 %%BeginData:         81 ASCII Lines
 currentglobal
 true setglobal
@@ -11078,7 +10992,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp databarlimited 0.0 2026032900 97826 104070
+%%BeginResource: uk.co.terryburton.bwipp databarlimited 0.0 2026033000 97826 100638
 %%BeginData:        314 ASCII Lines
 currentglobal
 true setglobal
@@ -11405,7 +11319,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp databarexpanded 0.0 2026032900 272378 255414
+%%BeginResource: uk.co.terryburton.bwipp databarexpanded 0.0 2026033000 268946 258846
 %%BeginData:        939 ASCII Lines
 currentglobal
 true setglobal
@@ -12357,7 +12271,7 @@ setglobal
 % --EXOP: segments=4
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp databarexpandedstacked 0.0 2026032900 75306 75280
+%%BeginResource: uk.co.terryburton.bwipp databarexpandedstacked 0.0 2026033000 78738 71848
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -12417,7 +12331,7 @@ setglobal
 % --EXOP: includetext segments=8
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 DataBar
-%%BeginResource: uk.co.terryburton.bwipp gs1northamericancoupon 0.0 2026032900 86157 89456
+%%BeginResource: uk.co.terryburton.bwipp gs1northamericancoupon 0.0 2026033000 86157 89368
 %%BeginData:        101 ASCII Lines
 currentglobal
 true setglobal
@@ -12531,7 +12445,7 @@ setglobal
 % --EXOP: showborder
 % --RNDR: renlinear
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp pharmacode 0.0 2026032900 66112 65927
+%%BeginResource: uk.co.terryburton.bwipp pharmacode 0.0 2026033000 66112 65927
 %%BeginData:         93 ASCII Lines
 currentglobal
 true setglobal
@@ -12637,7 +12551,7 @@ setglobal
 % --EXOP: includetext showborder
 % --RNDR: renlinear
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp pharmacode2 0.0 2026032900 66952 70155
+%%BeginResource: uk.co.terryburton.bwipp pharmacode2 0.0 2026033000 66952 70155
 %%BeginData:        108 ASCII Lines
 currentglobal
 true setglobal
@@ -12758,7 +12672,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp code2of5 0.0 2026032900 72607 75691
+%%BeginResource: uk.co.terryburton.bwipp code2of5 0.0 2026033000 72607 75691
 %%BeginData:        159 ASCII Lines
 currentglobal
 true setglobal
@@ -12930,7 +12844,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp industrial2of5 0.0 2026032900 62779 66193
+%%BeginResource: uk.co.terryburton.bwipp industrial2of5 0.0 2026033000 62779 66193
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -12990,7 +12904,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp iata2of5 0.0 2026032900 62749 66169
+%%BeginResource: uk.co.terryburton.bwipp iata2of5 0.0 2026033000 62749 66169
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -13050,7 +12964,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp matrix2of5 0.0 2026032900 62759 66177
+%%BeginResource: uk.co.terryburton.bwipp matrix2of5 0.0 2026033000 62759 66177
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -13110,7 +13024,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp coop2of5 0.0 2026032900 62749 66169
+%%BeginResource: uk.co.terryburton.bwipp coop2of5 0.0 2026033000 62749 66169
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -13170,7 +13084,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp datalogic2of5 0.0 2026032900 62774 66189
+%%BeginResource: uk.co.terryburton.bwipp datalogic2of5 0.0 2026033000 62774 66189
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -13230,7 +13144,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp code11 0.0 2026032900 77688 84187
+%%BeginResource: uk.co.terryburton.bwipp code11 0.0 2026033000 77688 80755
 %%BeginData:        184 ASCII Lines
 currentglobal
 true setglobal
@@ -13427,7 +13341,7 @@ setglobal
 % --EXOP: semi includetext includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp bc412 0.0 2026032900 79181 85720
+%%BeginResource: uk.co.terryburton.bwipp bc412 0.0 2026033000 79181 82200
 %%BeginData:        222 ASCII Lines
 currentglobal
 true setglobal
@@ -13662,7 +13576,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp rationalizedCodabar 0.0 2026032900 74505 77431
+%%BeginResource: uk.co.terryburton.bwipp rationalizedCodabar 0.0 2026033000 74505 77431
 %%BeginData:        153 ASCII Lines
 currentglobal
 true setglobal
@@ -13828,7 +13742,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp onecode 0.0 2026032900 118919 125564
+%%BeginResource: uk.co.terryburton.bwipp onecode 0.0 2026033000 118919 122044
 %%BeginData:        371 ASCII Lines
 currentglobal
 true setglobal
@@ -14212,7 +14126,7 @@ setglobal
 % --EXOP: includetext includecheckintext
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp postnet 0.0 2026032900 70687 73881
+%%BeginResource: uk.co.terryburton.bwipp postnet 0.0 2026033000 70687 73881
 %%BeginData:        140 ASCII Lines
 currentglobal
 true setglobal
@@ -14365,7 +14279,7 @@ setglobal
 % --EXOP: includetext includecheckintext
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp planet 0.0 2026032900 70561 73761
+%%BeginResource: uk.co.terryburton.bwipp planet 0.0 2026033000 70561 73761
 %%BeginData:        143 ASCII Lines
 currentglobal
 true setglobal
@@ -14521,7 +14435,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp royalmail 0.0 2026032900 75732 78825
+%%BeginResource: uk.co.terryburton.bwipp royalmail 0.0 2026033000 75732 78825
 %%BeginData:        180 ASCII Lines
 currentglobal
 true setglobal
@@ -14714,7 +14628,7 @@ setglobal
 % --EXOP: includetext custinfoenc=character
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp auspost 0.0 2026032900 96309 99226
+%%BeginResource: uk.co.terryburton.bwipp auspost 0.0 2026033000 96309 99226
 %%BeginData:        299 ASCII Lines
 currentglobal
 true setglobal
@@ -15026,7 +14940,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp kix 0.0 2026032900 71817 75045
+%%BeginResource: uk.co.terryburton.bwipp kix 0.0 2026033000 71817 75045
 %%BeginData:        143 ASCII Lines
 currentglobal
 true setglobal
@@ -15182,7 +15096,7 @@ setglobal
 % --EXOP: includetext includecheckintext
 % --RNDR: renlinear
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp japanpost 0.0 2026032900 73609 76786
+%%BeginResource: uk.co.terryburton.bwipp japanpost 0.0 2026033000 73609 76786
 %%BeginData:        180 ASCII Lines
 currentglobal
 true setglobal
@@ -15375,7 +15289,7 @@ setglobal
 % --EXOP: includetext includecheck includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp msi 0.0 2026032900 98156 104679
+%%BeginResource: uk.co.terryburton.bwipp msi 0.0 2026033000 98156 101247
 %%BeginData:        178 ASCII Lines
 currentglobal
 true setglobal
@@ -15566,7 +15480,7 @@ setglobal
 % --EXOP: includetext includecheckintext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp plessey 0.0 2026032900 77489 83963
+%%BeginResource: uk.co.terryburton.bwipp plessey 0.0 2026033000 77489 80531
 %%BeginData:        190 ASCII Lines
 currentglobal
 true setglobal
@@ -15769,7 +15683,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp telepen 0.0 2026032900 80964 80716
+%%BeginResource: uk.co.terryburton.bwipp telepen 0.0 2026033000 77532 80716
 %%BeginData:        188 ASCII Lines
 currentglobal
 true setglobal
@@ -15970,7 +15884,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp telepennumeric 0.0 2026032900 65786 69042
+%%BeginResource: uk.co.terryburton.bwipp telepennumeric 0.0 2026033000 69218 65522
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -16030,7 +15944,7 @@ setglobal
 % --EXOP: version=b inkspread=-0.5 parsefnc includetext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp posicode 0.0 2026032900 129641 132341
+%%BeginResource: uk.co.terryburton.bwipp posicode 0.0 2026033000 128053 127359
 %%BeginData:        492 ASCII Lines
 currentglobal
 true setglobal
@@ -16535,7 +16449,7 @@ setglobal
 % --EXOP: columns=8
 % --RNDR: renmatrix
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp codablockf 0.0 2026032900 153969 152989
+%%BeginResource: uk.co.terryburton.bwipp codablockf 0.0 2026033000 157313 153077
 %%BeginData:        647 ASCII Lines
 currentglobal
 true setglobal
@@ -17195,7 +17109,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp code16k 0.0 2026032900 180528 176025
+%%BeginResource: uk.co.terryburton.bwipp code16k 0.0 2026033000 180616 179457
 %%BeginData:        849 ASCII Lines
 currentglobal
 true setglobal
@@ -18057,7 +17971,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp code49 0.0 2026032900 257971 253740
+%%BeginResource: uk.co.terryburton.bwipp code49 0.0 2026033000 257971 253828
 %%BeginData:       1165 ASCII Lines
 currentglobal
 true setglobal
@@ -19235,7 +19149,7 @@ setglobal
 % --EXOP: height=0.5 includetext
 % --RNDR: renlinear
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp channelcode 0.0 2026032900 137488 139964
+%%BeginResource: uk.co.terryburton.bwipp channelcode 0.0 2026033000 134192 143108
 %%BeginData:        274 ASCII Lines
 currentglobal
 true setglobal
@@ -19521,7 +19435,7 @@ setglobal
 % --EXAM: 11099
 % --EXOP: inkspread=-0.25 showborder borderleft=0 borderright=0
 % --RNDR: renlinear
-%%BeginResource: uk.co.terryburton.bwipp flattermarken 0.0 2026032900 60890 67747
+%%BeginResource: uk.co.terryburton.bwipp flattermarken 0.0 2026033000 60890 67659
 %%BeginData:         85 ASCII Lines
 currentglobal
 true setglobal
@@ -19618,7 +19532,7 @@ setglobal
 % --EXAM: 331132131313411122131311333213114131131221323
 % --EXOP: height=0.5
 % --RNDR: renlinear
-%%BeginResource: uk.co.terryburton.bwipp raw 0.0 2026032900 58636 65384
+%%BeginResource: uk.co.terryburton.bwipp raw 0.0 2026033000 58636 65384
 %%BeginData:         57 ASCII Lines
 currentglobal
 true setglobal
@@ -19687,7 +19601,7 @@ setglobal
 % --EXAM: FATDAFTDAD
 % --EXOP:
 % --RNDR: renlinear
-%%BeginResource: uk.co.terryburton.bwipp daft 0.0 2026032900 65152 65005
+%%BeginResource: uk.co.terryburton.bwipp daft 0.0 2026033000 65152 65005
 %%BeginData:         83 ASCII Lines
 currentglobal
 true setglobal
@@ -19783,7 +19697,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp symbol 0.0 2026032900 736251 739093
+%%BeginResource: uk.co.terryburton.bwipp symbol 0.0 2026033000 736163 739093
 %%BeginData:         93 ASCII Lines
 currentglobal
 true setglobal
@@ -19889,7 +19803,7 @@ setglobal
 % --EXOP: columns=2
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp pdf417 0.0 2026032900 269172 267249
+%%BeginResource: uk.co.terryburton.bwipp pdf417 0.0 2026033000 268996 267073
 %%BeginData:       1214 ASCII Lines
 currentglobal
 true setglobal
@@ -21116,7 +21030,7 @@ setglobal
 % --EXOP: columns=2
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp pdf417compact 0.0 2026032900 75921 68952
+%%BeginResource: uk.co.terryburton.bwipp pdf417compact 0.0 2026033000 72489 72384
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -21176,7 +21090,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp micropdf417 0.0 2026032900 295237 289697
+%%BeginResource: uk.co.terryburton.bwipp micropdf417 0.0 2026033000 291893 292953
 %%BeginData:       1332 ASCII Lines
 currentglobal
 true setglobal
@@ -22521,7 +22435,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp datamatrix 0.0 2026032900 421877 416356
+%%BeginResource: uk.co.terryburton.bwipp datamatrix 0.0 2026033000 418445 416532
 %%BeginData:       1154 ASCII Lines
 currentglobal
 true setglobal
@@ -23688,7 +23602,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp datamatrixrectangular 0.0 2026032900 72537 72424
+%%BeginResource: uk.co.terryburton.bwipp datamatrixrectangular 0.0 2026033000 75969 68992
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -23748,7 +23662,7 @@ setglobal
 % --EXOP: version=8x96
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp datamatrixrectangularextension 0.0 2026032900 72562 72440
+%%BeginResource: uk.co.terryburton.bwipp datamatrixrectangularextension 0.0 2026033000 75994 69008
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -23808,7 +23722,7 @@ setglobal
 % --EXOP: type=29
 % --RNDR: renmatrix
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp mailmark 0.0 2026032900 77329 77212
+%%BeginResource: uk.co.terryburton.bwipp mailmark 0.0 2026033000 80761 77196
 %%BeginData:         96 ASCII Lines
 currentglobal
 true setglobal
@@ -23917,7 +23831,7 @@ setglobal
 % --EXOP: eclevel=M
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp qrcode 0.0 2026032900 840843 840871
+%%BeginResource: uk.co.terryburton.bwipp qrcode 0.0 2026033000 841371 837335
 %%BeginData:       1819 ASCII Lines
 currentglobal
 true setglobal
@@ -25749,7 +25663,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Payments
-%%BeginResource: uk.co.terryburton.bwipp swissqrcode 0.0 2026032900 80505 76834
+%%BeginResource: uk.co.terryburton.bwipp swissqrcode 0.0 2026033000 80401 76834
 %%BeginData:        139 ASCII Lines
 currentglobal
 true setglobal
@@ -25901,7 +25815,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp microqrcode 0.0 2026032900 76021 72382
+%%BeginResource: uk.co.terryburton.bwipp microqrcode 0.0 2026033000 72485 72486
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -25961,7 +25875,7 @@ setglobal
 % --EXOP: version=R17x139
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp rectangularmicroqrcode 0.0 2026032900 76064 72414
+%%BeginResource: uk.co.terryburton.bwipp rectangularmicroqrcode 0.0 2026033000 72528 72518
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -26021,7 +25935,7 @@ setglobal
 % --EXOP: mode=2 parse
 % --RNDR: renmaximatrix
 % --FMLY: Postal Symbols
-%%BeginResource: uk.co.terryburton.bwipp maxicode 0.0 2026032900 211002 230240
+%%BeginResource: uk.co.terryburton.bwipp maxicode 0.0 2026033000 216554 238888
 %%BeginData:       1122 ASCII Lines
 currentglobal
 true setglobal
@@ -27156,7 +27070,7 @@ setglobal
 % --EXOP: format=full
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp azteccode 0.0 2026032900 281293 275576
+%%BeginResource: uk.co.terryburton.bwipp azteccode 0.0 2026033000 277861 279096
 %%BeginData:       1093 ASCII Lines
 currentglobal
 true setglobal
@@ -28262,7 +28176,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp azteccodecompact 0.0 2026032900 72513 72405
+%%BeginResource: uk.co.terryburton.bwipp azteccodecompact 0.0 2026033000 75945 68973
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -28322,7 +28236,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp aztecrune 0.0 2026032900 72482 72381
+%%BeginResource: uk.co.terryburton.bwipp aztecrune 0.0 2026033000 75914 68949
 %%BeginData:         47 ASCII Lines
 currentglobal
 true setglobal
@@ -28382,7 +28296,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp codeone 0.0 2026032900 278834 277099
+%%BeginResource: uk.co.terryburton.bwipp codeone 0.0 2026033000 278746 277011
 %%BeginData:       1195 ASCII Lines
 currentglobal
 true setglobal
@@ -29590,7 +29504,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp hanxin 0.0 2026032900 512468 510625
+%%BeginResource: uk.co.terryburton.bwipp hanxin 0.0 2026033000 508596 510977
 %%BeginData:       1091 ASCII Lines
 currentglobal
 true setglobal
@@ -30694,7 +30608,7 @@ setglobal
 % --EXOP: inkspread=0.16
 % --RNDR: renmatrix
 % --FMLY: Less-used Symbols
-%%BeginResource: uk.co.terryburton.bwipp dotcode 0.0 2026032900 306821 304818
+%%BeginResource: uk.co.terryburton.bwipp dotcode 0.0 2026033000 306821 304802
 %%BeginData:       1277 ASCII Lines
 currentglobal
 true setglobal
@@ -31984,7 +31898,7 @@ setglobal
 % --EXOP: eclevel=EC2
 % --RNDR: renmatrix
 % --FMLY: Two-dimensional symbols
-%%BeginResource: uk.co.terryburton.bwipp ultracode 0.0 2026032900 147976 143040
+%%BeginResource: uk.co.terryburton.bwipp ultracode 0.0 2026033000 144280 146560
 %%BeginData:        505 ASCII Lines
 currentglobal
 true setglobal
@@ -32501,7 +32415,7 @@ setglobal
 % --EXAM: This is JAB Code
 % --EXOP: eclevel=6
 % --RNDR: renmatrix
-%%BeginResource: uk.co.terryburton.bwipp jabcode 0.0 2026032900 329713 324381
+%%BeginResource: uk.co.terryburton.bwipp jabcode 0.0 2026033000 329713 324469
 %%BeginData:       1406 ASCII Lines
 currentglobal
 true setglobal
@@ -33919,7 +33833,7 @@ setglobal
 % --EXAM: (01)09521234543213(3103)000123
 % --EXOP: ccversion=b cccolumns=4
 % --RNDR: renmatrix
-%%BeginResource: uk.co.terryburton.bwipp gs1-cc 0.0 2026032900 221812 214194
+%%BeginResource: uk.co.terryburton.bwipp gs1-cc 0.0 2026033000 221884 214194
 %%BeginData:        715 ASCII Lines
 currentglobal
 true setglobal
@@ -34647,7 +34561,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp ean13composite 0.0 2026032900 109965 113292
+%%BeginResource: uk.co.terryburton.bwipp ean13composite 0.0 2026033000 113485 109860
 %%BeginData:        164 ASCII Lines
 currentglobal
 true setglobal
@@ -34824,7 +34738,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp ean8composite 0.0 2026032900 110266 113594
+%%BeginResource: uk.co.terryburton.bwipp ean8composite 0.0 2026033000 113698 110162
 %%BeginData:        169 ASCII Lines
 currentglobal
 true setglobal
@@ -35006,7 +34920,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp upcacomposite 0.0 2026032900 110567 113911
+%%BeginResource: uk.co.terryburton.bwipp upcacomposite 0.0 2026033000 110567 113895
 %%BeginData:        164 ASCII Lines
 currentglobal
 true setglobal
@@ -35183,7 +35097,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp upcecomposite 0.0 2026032900 113998 110462
+%%BeginResource: uk.co.terryburton.bwipp upcecomposite 0.0 2026033000 110566 113910
 %%BeginData:        164 ASCII Lines
 currentglobal
 true setglobal
@@ -35360,7 +35274,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp databaromnicomposite 0.0 2026032900 105614 108841
+%%BeginResource: uk.co.terryburton.bwipp databaromnicomposite 0.0 2026033000 109134 105409
 %%BeginData:        166 ASCII Lines
 currentglobal
 true setglobal
@@ -35539,7 +35453,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp databarstackedcomposite 0.0 2026032900 110291 106648
+%%BeginResource: uk.co.terryburton.bwipp databarstackedcomposite 0.0 2026033000 110291 106648
 %%BeginData:        161 ASCII Lines
 currentglobal
 true setglobal
@@ -35713,7 +35627,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp databarstackedomnicomposite 0.0 2026032900 110331 106672
+%%BeginResource: uk.co.terryburton.bwipp databarstackedomnicomposite 0.0 2026033000 110331 106672
 %%BeginData:        161 ASCII Lines
 currentglobal
 true setglobal
@@ -35887,7 +35801,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp databartruncatedcomposite 0.0 2026032900 111316 107550
+%%BeginResource: uk.co.terryburton.bwipp databartruncatedcomposite 0.0 2026033000 111228 107550
 %%BeginData:        167 ASCII Lines
 currentglobal
 true setglobal
@@ -36067,7 +35981,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp databarlimitedcomposite 0.0 2026032900 104115 107279
+%%BeginResource: uk.co.terryburton.bwipp databarlimitedcomposite 0.0 2026033000 107547 103847
 %%BeginData:        156 ASCII Lines
 currentglobal
 true setglobal
@@ -36236,7 +36150,7 @@ setglobal
 % --EXOP:
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp databarexpandedcomposite 0.0 2026032900 109356 105697
+%%BeginResource: uk.co.terryburton.bwipp databarexpandedcomposite 0.0 2026033000 105924 109145
 %%BeginData:        161 ASCII Lines
 currentglobal
 true setglobal
@@ -36410,7 +36324,7 @@ setglobal
 % --EXOP: segments=4
 % --RNDR: renmatrix renlinear
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp databarexpandedstackedcomposite 0.0 2026032900 107156 110496
+%%BeginResource: uk.co.terryburton.bwipp databarexpandedstackedcomposite 0.0 2026033000 110588 106976
 %%BeginData:        155 ASCII Lines
 currentglobal
 true setglobal
@@ -36578,7 +36492,7 @@ setglobal
 % --EXOP: ccversion=c
 % --RNDR: renlinear renmatrix
 % --FMLY: GS1 Composite Symbols
-%%BeginResource: uk.co.terryburton.bwipp gs1-128composite 0.0 2026032900 115012 118280
+%%BeginResource: uk.co.terryburton.bwipp gs1-128composite 0.0 2026033000 114908 118368
 %%BeginData:        181 ASCII Lines
 currentglobal
 true setglobal
@@ -36772,7 +36686,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp gs1datamatrix 0.0 2026032900 83927 80346
+%%BeginResource: uk.co.terryburton.bwipp gs1datamatrix 0.0 2026033000 83927 80346
 %%BeginData:         93 ASCII Lines
 currentglobal
 true setglobal
@@ -36878,7 +36792,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp gs1datamatrixrectangular 0.0 2026032900 84221 80530
+%%BeginResource: uk.co.terryburton.bwipp gs1datamatrixrectangular 0.0 2026033000 84133 80530
 %%BeginData:         94 ASCII Lines
 currentglobal
 true setglobal
@@ -36985,7 +36899,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renmatrix
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp gs1dldatamatrix 0.0 2026032900 81876 78332
+%%BeginResource: uk.co.terryburton.bwipp gs1dldatamatrix 0.0 2026033000 81876 78332
 %%BeginData:         77 ASCII Lines
 currentglobal
 true setglobal
@@ -37075,7 +36989,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp gs1qrcode 0.0 2026032900 83589 80022
+%%BeginResource: uk.co.terryburton.bwipp gs1qrcode 0.0 2026033000 83589 80022
 %%BeginData:         92 ASCII Lines
 currentglobal
 true setglobal
@@ -37180,7 +37094,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renmatrix
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp gs1dlqrcode 0.0 2026032900 81852 78312
+%%BeginResource: uk.co.terryburton.bwipp gs1dlqrcode 0.0 2026033000 81852 74880
 %%BeginData:         77 ASCII Lines
 currentglobal
 true setglobal
@@ -37270,7 +37184,7 @@ setglobal
 % --EXOP: rows=16
 % --RNDR: renmatrix
 % --FMLY: Supply Chain
-%%BeginResource: uk.co.terryburton.bwipp gs1dotcode 0.0 2026032900 83662 80091
+%%BeginResource: uk.co.terryburton.bwipp gs1dotcode 0.0 2026033000 83662 80091
 %%BeginData:         92 ASCII Lines
 currentglobal
 true setglobal
@@ -37375,7 +37289,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibccode39 0.0 2026032900 76670 76508
+%%BeginResource: uk.co.terryburton.bwipp hibccode39 0.0 2026033000 76670 76508
 %%BeginData:        132 ASCII Lines
 currentglobal
 true setglobal
@@ -37520,7 +37434,7 @@ setglobal
 % --EXOP: includetext
 % --RNDR: renlinear
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibccode128 0.0 2026032900 81310 80778
+%%BeginResource: uk.co.terryburton.bwipp hibccode128 0.0 2026033000 81310 80762
 %%BeginData:        128 ASCII Lines
 currentglobal
 true setglobal
@@ -37661,7 +37575,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibcdatamatrix 0.0 2026032900 85191 81446
+%%BeginResource: uk.co.terryburton.bwipp hibcdatamatrix 0.0 2026033000 85191 81446
 %%BeginData:        116 ASCII Lines
 currentglobal
 true setglobal
@@ -37790,7 +37704,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibcdatamatrixrectangular 0.0 2026032900 85460 81638
+%%BeginResource: uk.co.terryburton.bwipp hibcdatamatrixrectangular 0.0 2026033000 85460 81638
 %%BeginData:        117 ASCII Lines
 currentglobal
 true setglobal
@@ -37920,7 +37834,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibcpdf417 0.0 2026032900 85350 81751
+%%BeginResource: uk.co.terryburton.bwipp hibcpdf417 0.0 2026033000 85350 81647
 %%BeginData:        118 ASCII Lines
 currentglobal
 true setglobal
@@ -38051,7 +37965,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibcmicropdf417 0.0 2026032900 85420 81682
+%%BeginResource: uk.co.terryburton.bwipp hibcmicropdf417 0.0 2026033000 85420 81682
 %%BeginData:        118 ASCII Lines
 currentglobal
 true setglobal
@@ -38182,7 +38096,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibcqrcode 0.0 2026032900 88663 81418
+%%BeginResource: uk.co.terryburton.bwipp hibcqrcode 0.0 2026033000 85127 81418
 %%BeginData:        112 ASCII Lines
 currentglobal
 true setglobal
@@ -38307,7 +38221,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibccodablockf 0.0 2026032900 79148 82211
+%%BeginResource: uk.co.terryburton.bwipp hibccodablockf 0.0 2026033000 79148 78675
 %%BeginData:        116 ASCII Lines
 currentglobal
 true setglobal
@@ -38436,7 +38350,7 @@ setglobal
 % --EXOP:
 % --RNDR: renmatrix
 % --FMLY: Pharmaceutical Symbols
-%%BeginResource: uk.co.terryburton.bwipp hibcazteccode 0.0 2026032900 85169 81439
+%%BeginResource: uk.co.terryburton.bwipp hibcazteccode 0.0 2026033000 85169 81439
 %%BeginData:        116 ASCII Lines
 currentglobal
 true setglobal

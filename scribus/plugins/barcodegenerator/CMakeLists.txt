@@ -30,7 +30,12 @@ install(TARGETS ${SCRIBUS_BARCODEGENERATOR_PLUGIN}
 	PERMISSIONS ${PLUGIN_PERMISSIONS}
 )
 
-install(FILES bwipp/barcode.ps barcode_ui.json
+install(FILES bwipp/barcode.ps.src
+	DESTINATION ${SHAREDIR}/plugins
+	RENAME barcode.ps
+)
+
+install(FILES barcode_ui.json
 	DESTINATION ${SHAREDIR}/plugins
 )
 
