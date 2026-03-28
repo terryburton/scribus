@@ -27,7 +27,10 @@
         "            true = checkbox enabled for this encoder (default: false)",
         "  dotty      - true = dotty checkbox enabled (default: false)",
         "  dottyForced - true = dotty always on and locked (default: false)",
-        "  height     - true = bar height slider enabled (default: false)"
+        "  height     - true = bar height slider enabled (default: false)",
+        "  bearer     - true = bearer bar option available (default: false)",
+        "  fixedtext  - true = encoder places text per-character; text",
+        "               align/offset/direction/gaps disabled unless alttext set"
     ],
     "families": {
         "Point Of Sale": {
@@ -178,12 +181,14 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "channelcode": {
             "includetext": true,
             "includecheck": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "codablockf": {
             "parse": true,
@@ -193,13 +198,15 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "code128": {
             "includetext": true,
             "parse": true,
             "parsefnc": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "code16k": {
             "parse": true,
@@ -209,24 +216,28 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "code32": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "code39": {
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "code39ext": {
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
             "parse": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "code49": {
             "parse": true,
@@ -236,13 +247,15 @@
             "includetext": true,
             "includecheck": true,
             "parsefnc": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "code93ext": {
             "includetext": true,
             "includecheck": true,
             "parse": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "codeone": {
             "parse": true,
@@ -253,13 +266,15 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "datalogic2of5": {
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "datamatrix": {
             "combo1": {
@@ -357,30 +372,40 @@
         "ean13": {
             "includetext": true,
             "guardwhitespace": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "ean13composite": {
             "includetext": true,
             "guardwhitespace": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "ean14": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "ean8": {
             "includetext": true,
             "guardwhitespace": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "ean8composite": {
             "includetext": true,
             "guardwhitespace": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "gs1-128": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "gs1datamatrix": {
             "combo1": {
@@ -769,11 +794,13 @@
         "hibccode128": {
             "includetext": true,
             "parse": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "hibccode39": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "hibcdatamatrix": {
             "combo1": {
@@ -982,42 +1009,53 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "identcode": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "industrial2of5": {
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "interleaved2of5": {
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "isbn": {
             "includetext": true,
             "guardwhitespace": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "ismn": {
             "includetext": true,
             "guardwhitespace": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "issn": {
             "includetext": true,
             "guardwhitespace": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "itf14": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "japanpost": {
             "includetext": true,
@@ -1028,7 +1066,8 @@
         },
         "leitcode": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "mailmark": {
             "combo1": {
@@ -1046,7 +1085,8 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "maxicode": {
             "combo1": {
@@ -1134,7 +1174,8 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "pdf417": {
             "combo1": {
@@ -1247,13 +1288,15 @@
         "plessey": {
             "includetext": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "posicode": {
             "includetext": true,
             "parse": true,
             "parsefnc": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "postnet": {
             "includetext": true,
@@ -1261,7 +1304,8 @@
         },
         "pzn": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "qrcode": {
             "combo1": {
@@ -1328,7 +1372,8 @@
             "includetext": true,
             "includecheck": true,
             "includecheckintext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "rectangularmicroqrcode": {
             "combo1": {
@@ -1387,16 +1432,19 @@
         },
         "sscc18": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "telepen": {
             "includetext": true,
             "parse": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "telepennumeric": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "ultracode": {
             "combo2": {
@@ -1417,37 +1465,53 @@
         },
         "upca": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "upcacomposite": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "upce": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "upcecomposite": {
             "includetext": true,
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "ean2": {
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "pharmacode": {
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "ean5": {
-            "height": true
+            "height": true,
+            "fixedtext": true,
+            "bearer": true
         },
         "databarexpandedstacked": {
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "gs1-128composite": {
-            "height": true
+            "height": true,
+            "bearer": true
         },
         "flattermarken": {
-            "height": true
+            "height": true,
+            "bearer": true
         }
     }
 }

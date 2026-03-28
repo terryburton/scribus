@@ -54,28 +54,18 @@ BarcodeGenerator::BarcodeGenerator(QWidget* parent, const char* name)
 	for (int c = 0; c < 8; ++c)
 		ui.textGridLayout->setColumnStretch(c, c % 2);
 
-	// Text block tab buttons — added to row 0 of the text grid (reserved in .ui)
-	{
-		auto* tabLayout = qobject_cast<QHBoxLayout*>(ui.textGridLayout->itemAtPosition(0, 0)->layout());
-		tabLayout->insertStretch(0);
-		auto* tabGroup = new QButtonGroup(this);
-		tabGroup->setExclusive(true);
-		for (int i = 1; i <= 9; ++i)
-		{
-			auto* btn = new QPushButton(QString::number(i), this);
-			btn->setCheckable(true);
-			btn->setFixedSize(24, 24);
-			btn->setChecked(i == 1);
-			tabGroup->addButton(btn, i);
-			tabLayout->addWidget(btn);
-		}
-		connect(tabGroup, &QButtonGroup::idClicked, this, [this](int id) {
-			updateOptionsTextFromUI();
-			m_activeTextTab = id;
-			updateUIFromOptionsText();
-			enqueuePaintBarcode(0);
-		});
-	}
+	// Text block tab button group
+	m_textTabGroup = new QButtonGroup(this);
+	m_textTabGroup->setExclusive(true);
+	for (int i = 1; i <= 9; ++i)
+		m_textTabGroup->addButton(findChild<QPushButton*>(QString("textTab%1").arg(i)), i);
+	connect(m_textTabGroup, &QButtonGroup::idClicked, this, [this](int id) {
+		updateOptionsTextFromUI();
+		m_activeTextTab = id;
+		updateUIFromOptionsText();
+		updateTextControlsEnabled();
+		enqueuePaintBarcode(0);
+	});
 
 	connect(&thread, SIGNAL(renderedImage(QString)),this, SLOT(updatePreview(QString)));
 
@@ -230,6 +220,7 @@ BarcodeGenerator::BarcodeGenerator(QWidget* parent, const char* name)
 	syncOptionsTextTimer->setSingleShot(true);
 	connect(syncOptionsTextTimer, &QTimer::timeout, this, [this]() {
 		updateOptionsTextFromUI();
+		updateTextControlsEnabled();
 		enqueuePaintBarcode(0);
 	});
 
@@ -421,6 +412,8 @@ void BarcodeGenerator::loadUIConfig(const QString& path)
 		eui.dotty = eo.value("dotty").toBool();
 		eui.dottyForced = eo.value("dottyForced").toBool();
 		eui.height = eo.value("height").toBool();
+		eui.bearer = eo.value("bearer").toBool();
+		eui.fixedtext = eo.value("fixedtext").toBool();
 		encoderUI[it.key()] = eui;
 	}
 }
@@ -680,6 +673,35 @@ void BarcodeGenerator::updateOptions()
 	ui.heightLabel->setEnabled(eui.height);
 	ui.heightSlider->setEnabled(eui.height);
 	ui.heightValue->setEnabled(eui.height);
+
+	// Bearer bars
+	ui.borderBearerRadio->setEnabled(eui.bearer);
+	if (!eui.bearer && ui.borderBearerRadio->isChecked())
+	{
+		ui.borderNoneRadio->blockSignals(true);
+		ui.borderNoneRadio->setChecked(true);
+		ui.borderNoneRadio->blockSignals(false);
+	}
+
+	updateTextControlsEnabled();
+}
+
+void BarcodeGenerator::updateTextControlsEnabled()
+{
+	QString enc = map[ui.bcCombo->currentText()].command;
+	const BarcodeEncoderUI& eui = encoderUI[enc];
+
+	// For fixedtext encoders on tab 1, text positioning controls are
+	// disabled unless alttext overrides the encoder's native text
+	bool fixed = eui.fixedtext && m_activeTextTab == 1
+		&& ui.alttextEdit->toPlainText().isEmpty();
+
+	ui.textdirectionCombo->setEnabled(!fixed);
+	ui.textgapsCombo->setEnabled(!fixed);
+	ui.textxalignCombo->setEnabled(!fixed);
+	ui.textyalignCombo->setEnabled(!fixed);
+	ui.textxoffsetCombo->setEnabled(!fixed);
+	ui.textyoffsetCombo->setEnabled(!fixed);
 }
 
 void BarcodeGenerator::bcFamilyComboChanged()
@@ -700,6 +722,10 @@ void BarcodeGenerator::bcComboChanged(int)
 
 void BarcodeGenerator::bcComboChanged()
 {
+	m_activeTextTab = 1;
+	if (auto* btn = m_textTabGroup->button(1))
+		btn->setChecked(true);
+
 	updateOptions();
 
 	if (ui.bcCombo->currentIndex() == 0)
