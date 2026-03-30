@@ -168,8 +168,9 @@ static const Resource *get_resource(BWIPP *ctx, const char *name) {
 }
 
 /* Read resource body from file on demand; returns NULL on I/O error */
-static char *load_code(BWIPP *ctx, const Resource *resource) {
+static char *load_code(BWIPP *ctx, const Resource *resource, size_t *out_len) {
 	char *code;
+	size_t i, j;
 
 	if (resource->code_offset < 0 || !ctx->f)
 		return NULL;
@@ -188,7 +189,14 @@ static char *load_code(BWIPP *ctx, const Resource *resource) {
 		return NULL;
 	}
 
-	code[resource->code_len] = '\0';
+	/* Strip \r from CRLF sequences (file opened in binary mode) */
+	for (i = 0, j = 0; i < resource->code_len; i++) {
+		if (code[i] != '\r' || i + 1 >= resource->code_len || code[i + 1] != '\n')
+			code[j++] = code[i];
+	}
+	code[j] = '\0';
+	*out_len = j;
+
 	return code;
 }
 
@@ -335,12 +343,10 @@ BWIPP_API BWIPP *bwipp_load(void) {
 	return bwipp_load_ex(NULL);
 }
 
-BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
+/* Core loader: takes an open FILE* (binary mode) */
+BWIPP *_bwipp_load_from_fp(FILE *f, bwipp_load_init_flags_t flags,
+			   unsigned int hexify_width) {
 	BWIPP *ctx;
-	FILE *f;
-	const char *filename = NULL;
-	bwipp_load_init_flags_t flags = bwipp_iDEFAULT;
-	unsigned int hexify_width = 0;
 
 	ResourceList **tail;
 	Resource *resource = NULL;
@@ -350,12 +356,6 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 	long code_start = 0;
 	bool skip;
 	bool lazy;
-
-	EXTRACT_OPT(filename);
-	EXTRACT_OPT(flags);
-	EXTRACT_OPT(hexify_width);
-	if (!filename)
-		filename = default_filename;
 
 	lazy = (flags & bwipp_iLAZY_LOAD) != 0;
 
@@ -373,10 +373,6 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 	ctx->hexify_width = hexify_width;
 	tail = &ctx->resourcelist;
 
-	f = fopen(filename, "r");
-	if (!f)
-		goto error;
-
 	if (!lazy) {
 		code = malloc(MAX_CODE);
 		if (!code)
@@ -386,6 +382,14 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 	skip = true;
 	while (fgets(buf, sizeof buf, f)) {
 		size_t line_len = strlen(buf);
+		size_t raw_len = line_len;
+
+		/* Strip \r from CRLF (binary mode preserves \r) */
+		if (line_len >= 2 && buf[line_len - 2] == '\r' && buf[line_len - 1] == '\n') {
+			buf[line_len - 2] = '\n';
+			buf[line_len - 1] = '\0';
+			line_len--;
+		}
 
 		/* Reject marker lines truncated by fgets */
 		if (strncmp(buf, "% --", 4) == 0 &&
@@ -453,6 +457,8 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 				*code = '\0';
 			code_len = 0;
 			code_start = ftell(f);
+			if (code_start < 0)
+				goto error;
 
 			continue;
 
@@ -478,6 +484,8 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 				if (!add_property(resource, key, value))
 					goto error;
 				code_start = ftell(f);
+				if (code_start < 0)
+					goto error;
 				continue;
 			}
 		}
@@ -501,6 +509,8 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 				goto error;
 
 			code_start = ftell(f);
+			if (code_start < 0)
+				goto error;
 			continue;
 
 		} /* REQUIRES */
@@ -531,15 +541,19 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 				goto error;
 
 			if (lazy) {
+				long end_pos = ftell(f);
+				if (end_pos < 0)
+					goto error;
 				resource->code = NULL;
 				resource->code_offset = code_start;
+				resource->code_len = (size_t)(end_pos - (long)raw_len - code_start);
 			} else {
 				resource->code = strdup(code);
 				if (!resource->code)
 					goto error;
 				*code = '\0';
+				resource->code_len = code_len;
 			}
-			resource->code_len = code_len;
 			code_len = 0;
 
 			/* Add to ResourceList */
@@ -563,13 +577,9 @@ BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
 		} /* END */
 
 		/* PS Code */
-		if (resource) {
-			if (lazy) {
-				code_len += line_len;
-			} else {
-				if (!safe_append_n(code, &code_len, MAX_CODE, buf, line_len))
-					goto error;
-			}
+		if (resource && !lazy) {
+			if (!safe_append_n(code, &code_len, MAX_CODE, buf, line_len))
+				goto error;
 		}
 	}
 
@@ -610,6 +620,25 @@ error:
 	bwipp_unload(ctx);
 
 	return NULL;
+}
+
+BWIPP_API BWIPP *bwipp_load_ex(const bwipp_load_init_opts_t *opts) {
+	FILE *f;
+	const char *filename = NULL;
+	bwipp_load_init_flags_t flags = bwipp_iDEFAULT;
+	unsigned int hexify_width = 0;
+
+	EXTRACT_OPT(filename);
+	EXTRACT_OPT(flags);
+	EXTRACT_OPT(hexify_width);
+	if (!filename)
+		filename = default_filename;
+
+	f = fopen(filename, "rb");
+	if (!f)
+		return NULL;
+
+	return _bwipp_load_from_fp(f, flags, hexify_width);  /* Takes ownership of f */
 }
 
 BWIPP_API BWIPP *bwipp_load_from_file(const char *filename) {
@@ -862,11 +891,12 @@ static bool append_resource_code(BWIPP *ctx, const Resource *res,
 	if (res->code) {
 		return safe_append_n(buf, pos, capacity, res->code, res->code_len);
 	} else {
-		char *lazy_code = load_code(ctx, res);
+		size_t len;
+		char *lazy_code = load_code(ctx, res, &len);
 		bool ok;
 		if (!lazy_code)
 			return false;
-		ok = safe_append_n(buf, pos, capacity, lazy_code, res->code_len);
+		ok = safe_append_n(buf, pos, capacity, lazy_code, len);
 		free(lazy_code);
 		return ok;
 	}
@@ -937,7 +967,10 @@ BWIPP_API char *bwipp_emit_all_resources(BWIPP *ctx) {
 
 	curr = ctx->resourcelist;
 
-	assert(ctx->resourcelist);
+	if (!curr) {
+		tmp = strdup("");
+		return tmp;  /* No resources */
+	}
 
 	code = malloc(MAX_CODE);
 	if (!code)

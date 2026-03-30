@@ -35,6 +35,12 @@
 
 #include "postscriptbarcode.h"
 #include <stddef.h>
+#include <stdio.h>
+
+#ifdef _MSC_VER
+#define strdup _strdup
+#define strtok_r strtok_s
+#endif
 
 typedef struct Property {
 	char *key, *value;
@@ -69,5 +75,9 @@ typedef struct FamilyList {
 	Family *entry;
 	struct FamilyList *next;
 } FamilyList;
+
+/* Private API for testing/fuzzing — takes ownership of f */
+BWIPP *_bwipp_load_from_fp(FILE *f, bwipp_load_init_flags_t flags,
+			   unsigned int hexify_width);
 
 #endif  /* BWIPP_PRIVATE_H */
